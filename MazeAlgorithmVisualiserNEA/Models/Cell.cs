@@ -19,11 +19,11 @@ namespace MazeAlgorithmVisualiserNEA.Models
         public bool RightWall { get; private set; }
 
         // this is for algorithms
-        public bool Visited { get; private set; }
+        private bool Visited;
 
         // identify specific cells as start and end, useful for rendering
-        public bool IsStart {  get; private set; }
-        public bool IsEnd {  get; private set; }
+        private bool IsStart;
+        private bool IsEnd;
 
 
         // constructor
@@ -43,6 +43,26 @@ namespace MazeAlgorithmVisualiserNEA.Models
             IsEnd = false;
         }
 
+        // SETTER METHODS
+
+        public void SetStart(bool start)
+        {
+            IsStart = start;
+        }
+        public void SetEnd(bool end)
+        {
+            IsEnd = end;
+        }
+
+        public void SetVisited(bool visited)
+        {
+            Visited = visited;
+        }
+
+
+
+
+        // HELPER METHODS
         // removes walls, used for maze generation algorithms
         public void RemoveWall(Direction direction)
         {

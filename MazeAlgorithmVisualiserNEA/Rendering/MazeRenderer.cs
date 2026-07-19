@@ -9,7 +9,7 @@ using System.Text;
     {
         public class MazeRenderer
         {
-            private int cellSize = 30;
+            private int cellSize = 30; // predefined size of cells, MAKE ABILITY TO CHANGE
 
 
             public void Draw(Graphics graphics, Maze maze)
@@ -18,9 +18,9 @@ using System.Text;
                 {
                     for (int column = 0; column < maze.Columns; column++)
                     {
-                        Cell cell = maze.GetCell(row, column);
+                        Cell cell = maze.GetCell(row, column); // gets cell from each cell in the maze
 
-                        DrawCell(graphics, cell);
+                        DrawCell(graphics, cell); // draws the cell
                     }
                 }
             }
