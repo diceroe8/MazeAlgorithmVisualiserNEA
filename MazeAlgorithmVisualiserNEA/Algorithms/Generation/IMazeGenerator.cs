@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MazeAlgorithmVisualiserNEA.Models;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Generation
 {
-    internal interface IMazeGenerator
+    public interface IMazeGenerator
     {
+        void Generate(Maze maze);
     }
 }

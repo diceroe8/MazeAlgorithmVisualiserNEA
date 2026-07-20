@@ -62,7 +62,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
         }
 
         // gets neighbour of a cell depending on direction
-        public Cell GetNeighbour(Cell cell, Direction direction)
+        public Cell? GetNeighbour(Cell cell, Direction direction)
         {
             int row = cell.Row;
             int column = cell.Column;
@@ -82,14 +82,18 @@ namespace MazeAlgorithmVisualiserNEA.Models
                     row--;
                     break;
             }
+            if (IsWithinBounds(row, column))
+            {
+                return GetCell(row, column);
+            }
+            return null;
 
-            return GetCell(row, column);
         }
 
         // removes both walls between cells to make removing walls easier
         public void RemoveWallBetween(Cell first, Cell second)
         {
-            if (first.Row == second.Column)
+            if (first.Row == second.Row)
             {
                 if (first.Column < second.Column)
                 {
@@ -130,6 +134,24 @@ namespace MazeAlgorithmVisualiserNEA.Models
                 neighbours.Add(neighbour);
             }
 
+            return neighbours;
+        }
+
+        // gets a list of unvisited neighbours
+        public List<Cell> GetUnvisitedNeighbours(Cell cell)
+        {
+            List<Cell> neighbours = new List<Cell>();
+
+            foreach (Direction direction in Enum.GetValues<Direction>())
+            {
+                Cell neighbour = GetNeighbour(cell, direction);
+
+                if (neighbour!= null && neighbour.Visited == false)
+                {
+                    neighbours.Add(neighbour);
+                }
+            }
+            
             return neighbours;
         }
 

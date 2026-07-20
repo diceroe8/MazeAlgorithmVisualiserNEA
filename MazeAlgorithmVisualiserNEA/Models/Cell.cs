@@ -19,7 +19,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
         public bool RightWall { get; private set; }
 
         // this is for algorithms
-        private bool Visited;
+        public bool Visited;
 
         // identify specific cells as start and end, useful for rendering
         private bool IsStart;
@@ -58,6 +58,10 @@ namespace MazeAlgorithmVisualiserNEA.Models
         {
             Visited = visited;
         }
+
+        //MAYBE ADD A RESETVISITED HERE FOR PATHFINDING
+
+
 
 
 
