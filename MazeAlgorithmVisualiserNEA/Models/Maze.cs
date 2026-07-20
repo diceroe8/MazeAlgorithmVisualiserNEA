@@ -102,8 +102,8 @@ namespace MazeAlgorithmVisualiserNEA.Models
                 }
                 else
                 {
-                    first.RemoveWall(Direction.Right);
-                    second.RemoveWall(Direction.Left);
+                    first.RemoveWall(Direction.Left);
+                    second.RemoveWall(Direction.Right);
                 }
             }
             else if (first.Column == second.Column)
@@ -129,9 +129,12 @@ namespace MazeAlgorithmVisualiserNEA.Models
 
             foreach (Direction direction in Enum.GetValues<Direction>())
             {
-                Cell neighbour = GetNeighbour(cell, direction);
+                Cell? neighbour = GetNeighbour(cell, direction);
 
-                neighbours.Add(neighbour);
+                if (neighbour != null)
+                {
+                    neighbours.Add(neighbour);
+                }
             }
 
             return neighbours;
@@ -152,6 +155,22 @@ namespace MazeAlgorithmVisualiserNEA.Models
                 }
             }
             
+            return neighbours;
+        }
+        
+        public List<Cell> GetVisitedNeighbours(Cell cell)
+        {
+            List<Cell> neighbours = new List<Cell>();
+
+            foreach (Direction direction in Enum.GetValues<Direction>())
+            {
+                Cell? neighbour = GetNeighbour(cell, direction);
+                if (neighbour != null && neighbour.Visited == true)
+                {
+                    neighbours.Add(neighbour);
+                }
+            }
+
             return neighbours;
         }
 

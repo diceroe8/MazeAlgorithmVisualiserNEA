@@ -9,7 +9,7 @@ using System.Text;
     {
         public class MazeRenderer
         {
-            private int cellSize = 15; // predefined size of cells, MAKE ABILITY TO CHANGE
+            private int cellSize = 10; // predefined size of cells, MAKE ABILITY TO CHANGE
 
 
             public void Draw(Graphics graphics, Maze maze)

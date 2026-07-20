@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Generation
 {
-    internal class KruskalsGenerator
+    public class KruskalsGenerator
     {
     }
 }

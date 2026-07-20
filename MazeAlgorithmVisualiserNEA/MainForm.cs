@@ -9,14 +9,14 @@ namespace MazeAlgorithmVisualiserNEA
     {
         private Maze maze;
         private MazeRenderer renderer;
-        private RecursiveBackTracker generator;
+        private PrimsGenerator generator;
         public MainForm()
         {
             InitializeComponent();
 
-            maze = new Maze(40, 40);
+            maze = new Maze(64, 64);
 
-            generator = new RecursiveBackTracker();
+            generator = new PrimsGenerator();
 
             generator.Generate(maze);
             renderer = new MazeRenderer();
@@ -31,8 +31,6 @@ namespace MazeAlgorithmVisualiserNEA
 
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-
-
 
             int offsetX = 500;
             int offsetY = 100;
