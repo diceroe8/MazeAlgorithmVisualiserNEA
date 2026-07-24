@@ -1,0 +1,16 @@
+﻿Filler method
+            bool Fill = false;
+
+            if (Fill)
+            {
+
+
+                for (int row = 0; row < maze.Rows; row++)
+                {
+                    for (int col = 0; col < maze.Columns; col++)
+                    {
+                        maze.GetCell(row, col).SetVisited(true);
+                    }
+                }
+
+            }

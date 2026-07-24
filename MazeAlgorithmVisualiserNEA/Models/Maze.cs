@@ -121,6 +121,36 @@ namespace MazeAlgorithmVisualiserNEA.Models
             }
         }
 
+        public void AddWallBetween(Cell first, Cell second) // mainly for recursive division
+        {
+            if (first.Row == second.Row)
+            {
+                if (first.Column < second.Column)
+                {
+                    first.AddWall(Direction.Right);
+                    second.AddWall(Direction.Left);
+                }
+                else
+                {
+                    first.AddWall(Direction.Left);
+                    second.AddWall(Direction.Right);
+                }
+            }
+            else if (first.Column == second.Column)
+            {
+                if (first.Row < second.Row)
+                {
+                    first.AddWall(Direction.Bottom);
+                    second.AddWall(Direction.Top);
+                }
+                else
+                {
+                    first.AddWall(Direction.Top);
+                    second.AddWall(Direction.Bottom);
+                }
+            }
+        }
+
         // gets a list of cell neighbours
         // useful for pathfinding algorithms
         public List<Cell> GetNeighbours(Cell cell)
@@ -173,6 +203,20 @@ namespace MazeAlgorithmVisualiserNEA.Models
 
             return neighbours;
         }
+
+        public void ClearAllWalls()
+        {
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int col = 0; col < Columns; col++)
+                {
+                    cells[row, col].ClearWall();
+                }
+            }
+        }
+
+
+
 
     }
 }

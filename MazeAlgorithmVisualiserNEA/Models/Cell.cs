@@ -22,8 +22,8 @@ namespace MazeAlgorithmVisualiserNEA.Models
         public bool Visited;
 
         // identify specific cells as start and end, useful for rendering
-        private bool IsStart;
-        private bool IsEnd;
+        public bool IsStart;
+        public bool IsEnd;
 
 
         // constructor
@@ -37,10 +37,11 @@ namespace MazeAlgorithmVisualiserNEA.Models
             BottomWall = true;
             LeftWall = true;
             RightWall = true;
-
+            
             Visited = false;
             IsStart = false;
             IsEnd = false;
+
         }
 
         // SETTER METHODS
@@ -57,6 +58,15 @@ namespace MazeAlgorithmVisualiserNEA.Models
         public void SetVisited(bool visited)
         {
             Visited = visited;
+        }
+
+
+        public void ClearWall() // for recursive division algorithm
+        {
+            TopWall = false;
+            BottomWall = false;
+            LeftWall = false;
+            RightWall = false;
         }
 
         //MAYBE ADD A RESETVISITED HERE FOR PATHFINDING
@@ -83,6 +93,25 @@ namespace MazeAlgorithmVisualiserNEA.Models
                     break;
                 case Direction.Right:
                     RightWall = false;
+                    break;
+            }
+        }
+
+        public void AddWall(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top:
+                    TopWall = true;
+                    break;
+                case Direction.Bottom:
+                    BottomWall = true;
+                    break;
+                case Direction.Left:
+                    LeftWall = true;
+                    break;
+                case Direction.Right:
+                    RightWall = true;
                     break;
             }
         }

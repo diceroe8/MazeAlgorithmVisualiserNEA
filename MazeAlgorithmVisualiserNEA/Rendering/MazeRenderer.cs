@@ -5,56 +5,81 @@ using System.Collections.Generic;
 using System.Text;
 
 
-    namespace MazeAlgorithmVisualiserNEA.Rendering
+namespace MazeAlgorithmVisualiserNEA.Rendering
+{
+    public class MazeRenderer
     {
-        public class MazeRenderer
+        private int cellSize = 20; // predefined size of cells, MAKE ABILITY TO CHANGE
+
+
+        public void Draw(Graphics graphics, Maze maze)
         {
-            private int cellSize = 25; // predefined size of cells, MAKE ABILITY TO CHANGE
-
-
-            public void Draw(Graphics graphics, Maze maze)
+            for (int row = 0; row < maze.Rows; row++)
             {
-                for (int row = 0; row < maze.Rows; row++)
+                for (int column = 0; column < maze.Columns; column++)
                 {
-                    for (int column = 0; column < maze.Columns; column++)
-                    {
-                        Cell cell = maze.GetCell(row, column); // gets cell from each cell in the maze
+                    Cell cell = maze.GetCell(row, column); // gets cell from each cell in the maze
 
-                        DrawCell(graphics, cell); // draws the cell
-                    }
+                    DrawCell(graphics, cell); // draws the cell
                 }
+            }
+        }
+
+
+
+        private void DrawCell(Graphics graphics, Cell cell)
+        {
+            int x = cell.Column * cellSize;
+            int y = cell.Row * cellSize;
+
+
+            if (cell.TopWall)
+            {
+                graphics.DrawLine(Pens.Black, x, y, x + cellSize, y);
             }
 
 
-            private void DrawCell(Graphics graphics, Cell cell)
+            if (cell.BottomWall)
             {
-                int x = cell.Column * cellSize;
-                int y = cell.Row * cellSize;
+                graphics.DrawLine(Pens.Black, x, y + cellSize, x + cellSize, y + cellSize);
+            }
 
 
-                if (cell.TopWall)
+            if (cell.LeftWall)
+            {
+                graphics.DrawLine(Pens.Black, x, y, x, y + cellSize);
+            }
+
+
+            if (cell.RightWall)
+            {
+                graphics.DrawLine(Pens.Black, x + cellSize, y, x + cellSize, y + cellSize);
+            }
+
+            if (cell.Visited)
+            {
+                using (Brush b = new SolidBrush(Color.LightBlue))
                 {
-                    graphics.DrawLine(Pens.Black, x, y, x + cellSize, y);
+                    graphics.FillRectangle(b, x + 1, y + 1, cellSize - 1, cellSize - 1);
                 }
+            }
 
-
-                if (cell.BottomWall)
+            if (cell.IsStart)
+            {
+                using (Brush b = new SolidBrush(Color.DarkRed))
                 {
-                    graphics.DrawLine(Pens.Black, x, y + cellSize, x + cellSize, y + cellSize);
+                    graphics.FillRectangle(b, x + 1, y + 1, cellSize - 1, cellSize - 1);
                 }
+            }
 
-
-                if (cell.LeftWall)
+            if (cell.IsEnd)
+            {
+                using (Brush b = new SolidBrush(Color.DarkGreen))
                 {
-                    graphics.DrawLine(Pens.Black, x, y, x, y + cellSize);
-                }
-
-
-                if (cell.RightWall)
-                {
-                    graphics.DrawLine(Pens.Black, x + cellSize, y, x + cellSize, y + cellSize);
+                    graphics.FillRectangle(b, x + 1, y + 1, cellSize - 1, cellSize - 1);
                 }
             }
         }
     }
+}
 
