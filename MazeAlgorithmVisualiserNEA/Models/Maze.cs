@@ -215,6 +215,38 @@ namespace MazeAlgorithmVisualiserNEA.Models
             }
         }
 
+        public void AddOuterBorder()
+        {
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int column = 0; column < Columns; column++)
+                {
+                    Cell cell = cells[row, column];
+
+                    if (row == 0)
+                    {
+                        cell.AddWall(Direction.Top);
+                    }
+
+                    if (row == Rows - 1)
+                    {
+                        cell.AddWall(Direction.Bottom);
+                    }
+
+                    if (column == 0)
+                    {
+                        cell.AddWall(Direction.Left);
+                    }
+
+                    if (column == Columns - 1)
+                    {
+                        cell.AddWall(Direction.Right);
+                    }
+                }
+            }
+
+        }
+
 
 
 

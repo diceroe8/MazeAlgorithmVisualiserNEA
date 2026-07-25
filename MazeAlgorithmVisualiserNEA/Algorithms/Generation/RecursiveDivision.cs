@@ -5,13 +5,14 @@ using MazeAlgorithmVisualiserNEA.Models;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Generation
 {
-    public class RecursiveDivision
+    public class RecursiveDivision : IMazeGenerator
     {
         Random rand = new Random();
 
         public void Generate(Maze maze)
         {
             maze.ClearAllWalls();
+            maze.AddOuterBorder();
 
             Divide(maze, 0, 0, maze.Rows, maze.Columns);
         }

@@ -9,7 +9,7 @@ namespace MazeAlgorithmVisualiserNEA
     {
         private Maze maze;
         private MazeRenderer renderer;
-        private KruskalsGenerator generator;
+        private RecursiveDivision generator;
         private Button generateButton;
         public MainForm()
         {
@@ -17,7 +17,7 @@ namespace MazeAlgorithmVisualiserNEA
 
             // creates maze, generator, and renderer objects
             maze = new Maze(32, 32);
-            generator = new KruskalsGenerator();
+            generator = new RecursiveDivision();
             renderer = new MazeRenderer();
 
             //generate initial maze
