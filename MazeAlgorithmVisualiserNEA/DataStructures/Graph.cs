@@ -10,6 +10,10 @@ namespace MazeAlgorithmVisualiserNEA.DataStructures
 
         public List<GraphNode> Nodes;
 
+        public GraphNode Start;
+
+        public GraphNode End; // used in the pathfinding algorithms
+
         public Graph()
         {
             Nodes = new List<GraphNode>();

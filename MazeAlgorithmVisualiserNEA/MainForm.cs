@@ -2,6 +2,8 @@ using MazeAlgorithmVisualiserNEA.Models;
 using MazeAlgorithmVisualiserNEA.Rendering;
 using MazeAlgorithmVisualiserNEA.Algorithms;
 using MazeAlgorithmVisualiserNEA.Algorithms.Generation;
+using MazeAlgorithmVisualiserNEA.DataStructures;
+using MazeAlgorithmVisualiserNEA.Converters;
 
 namespace MazeAlgorithmVisualiserNEA
 {
@@ -11,6 +13,10 @@ namespace MazeAlgorithmVisualiserNEA
         private MazeRenderer renderer;
         private RecursiveDivision generator;
         private Button generateButton;
+        private GraphRenderer graphRenderer;
+        private Graph graph;
+        private MazeToGraphConverter converter;
+
         public MainForm()
         {
             InitializeComponent();
@@ -19,6 +25,9 @@ namespace MazeAlgorithmVisualiserNEA
             maze = new Maze(32, 32);
             generator = new RecursiveDivision();
             renderer = new MazeRenderer();
+            graphRenderer = new GraphRenderer();
+            converter = new MazeToGraphConverter();
+
 
             //generate initial maze
             // generator.Generate(maze);
@@ -49,6 +58,8 @@ namespace MazeAlgorithmVisualiserNEA
             Random rnd = new Random();
             maze = new Maze(32, 32);
             generator.Generate(maze);
+
+            graph = converter.Convert(maze);
             maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32)).SetStart(true);
             maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32)).SetEnd(true);
 
@@ -75,6 +86,12 @@ namespace MazeAlgorithmVisualiserNEA
 
             e.Graphics.TranslateTransform(offsetX, offsetY);
             renderer.Draw(e.Graphics, maze);
+
+            if (graph != null)
+            {
+                graphRenderer.Draw(e.Graphics, graph);
+            }
+            
 
 
         }

@@ -17,5 +17,10 @@ namespace MazeAlgorithmVisualiserNEA.DataStructures
             Cell = cell;
             Edges = new List<GraphEdge>();
         }
+
+        public void AddEdge(GraphNode destination, int cost = 1)
+        {
+            Edges.Add(new GraphEdge(destination, cost));
+        }
     }
 }
