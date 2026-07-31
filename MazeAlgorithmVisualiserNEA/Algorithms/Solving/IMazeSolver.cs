@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MazeAlgorithmVisualiserNEA.DataStructures;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
 {
-    internal interface IMazeSolver
+    public interface IMazeSolver
     {
+        List<GraphNode> Solve(Graph graph);
     }
 }

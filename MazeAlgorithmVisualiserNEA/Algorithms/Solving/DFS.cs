@@ -4,7 +4,8 @@ using System.Text;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
 {
-    internal class DFS
+    public class DFS
     {
+
     }
 }
