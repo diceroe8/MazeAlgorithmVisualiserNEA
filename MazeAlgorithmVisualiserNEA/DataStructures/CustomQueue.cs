@@ -4,11 +4,11 @@ using System.Text;
 
 namespace MazeAlgorithmVisualiserNEA.DataStructures
 {
-    public class Queue<T>
+    public class CustomQueue<T>
     {
         private List<T> items;
 
-        public Queue()
+        public CustomQueue()
         {
             items = new List<T>();
         }

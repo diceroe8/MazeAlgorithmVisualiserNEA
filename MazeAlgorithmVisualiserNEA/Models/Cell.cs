@@ -112,7 +112,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
                     break;
                 case Direction.Right:
                     RightWall = true;
-                    break;
+                    break; 
             }
         }
 

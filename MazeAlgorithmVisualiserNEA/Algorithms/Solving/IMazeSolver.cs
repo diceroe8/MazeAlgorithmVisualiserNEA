@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using MazeAlgorithmVisualiserNEA.DataStructures;
+using MazeAlgorithmVisualiserNEA.Models;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
 {
     public interface IMazeSolver
     {
-        List<GraphNode> Solve(Graph graph);
+        PathfindingProcess Solve(Graph graph);
     }
 }

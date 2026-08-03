@@ -4,18 +4,24 @@ using MazeAlgorithmVisualiserNEA.Algorithms;
 using MazeAlgorithmVisualiserNEA.Algorithms.Generation;
 using MazeAlgorithmVisualiserNEA.DataStructures;
 using MazeAlgorithmVisualiserNEA.Converters;
+using MazeAlgorithmVisualiserNEA.Algorithms.Solving;
 
 namespace MazeAlgorithmVisualiserNEA
 {
     public partial class MainForm : Form
     {
         private Maze maze;
-        private MazeRenderer renderer;
-        private RecursiveDivision generator;
+        private MazeRenderer mazeRenderer;
+        private ImperfectMazeGenerator generator;
         private Button generateButton;
         private GraphRenderer graphRenderer;
         private Graph graph;
         private MazeToGraphConverter converter;
+        private PathRenderer pathRenderer;
+        private DFS DFSsolver;
+        private BFS BFSsolver;
+        private PathfindingProcess DFSsolution;
+        private PathfindingProcess BFSsolution;
 
         public MainForm()
         {
@@ -23,10 +29,13 @@ namespace MazeAlgorithmVisualiserNEA
 
             // creates maze, generator, and renderer objects
             maze = new Maze(32, 32);
-            generator = new RecursiveDivision();
-            renderer = new MazeRenderer();
+            generator = new ImperfectMazeGenerator();
+            mazeRenderer = new MazeRenderer();
             graphRenderer = new GraphRenderer();
             converter = new MazeToGraphConverter();
+            pathRenderer = new PathRenderer();
+            DFSsolver = new DFS();
+            BFSsolver = new BFS();
 
 
             //generate initial maze
@@ -59,14 +68,22 @@ namespace MazeAlgorithmVisualiserNEA
             maze = new Maze(32, 32);
             generator.Generate(maze);
 
+            // choose start and end cells
+            Cell start = maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32));
+            Cell end = maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32));
+
+            start.SetStart(true);
+            end.SetEnd(true);
+
             graph = converter.Convert(maze);
-            maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32)).SetStart(true);
-            maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32)).SetEnd(true);
-
-            // fill all cells
 
 
-            //redraw maze
+
+            DFSsolution = DFSsolver.Solve(graph);
+            BFSsolution = BFSsolver.Solve(graph);
+
+
+
             this.Invalidate();
         }
 
@@ -85,11 +102,13 @@ namespace MazeAlgorithmVisualiserNEA
             int offsetY = 100;
 
             e.Graphics.TranslateTransform(offsetX, offsetY);
-            renderer.Draw(e.Graphics, maze);
+            mazeRenderer.Draw(e.Graphics, maze);
 
-            if (graph != null)
+            if (DFSsolution != null || BFSsolution != null)
             {
-                graphRenderer.Draw(e.Graphics, graph);
+                pathRenderer.Draw(e.Graphics, BFSsolution.Path, Color.LimeGreen);
+                pathRenderer.Draw(e.Graphics, DFSsolution.Path, Color.Gold);
+                
             }
             
 

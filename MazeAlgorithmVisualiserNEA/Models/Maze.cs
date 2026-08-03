@@ -247,6 +247,47 @@ namespace MazeAlgorithmVisualiserNEA.Models
 
         }
 
+        public bool HasWallBetween(Cell? a, Cell? b)
+        {
+            // safety check
+            if (a == null || b == null)
+            {
+                return false;
+            }
+
+            if (a.Row == b.Row)
+            {
+                // b is to the right of a
+                if (a.Column < b.Column)
+                {
+                    return a.RightWall;
+                }
+
+                // b is to the left of a
+                if (b.Column < a.Column)
+                {
+                    return b.RightWall;
+                }
+            }
+
+            else if (a.Column == b.Column)
+            {
+                // b is below a
+                if (a.Row < b.Row)
+                {
+                    return a.BottomWall;
+                }
+
+                // b is above a
+                if (b.Row < a.Row)
+                {
+                    return b.BottomWall;
+                }
+            }
+
+            return false;
+        }
+
 
 
 

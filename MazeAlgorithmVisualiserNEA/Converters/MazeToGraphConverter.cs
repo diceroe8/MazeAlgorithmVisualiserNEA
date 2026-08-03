@@ -29,6 +29,16 @@ namespace MazeAlgorithmVisualiserNEA.Converters
                     graph.Nodes.Add(node);
 
                     lookup.Add(cell, node);
+
+                    if (cell.IsStart)
+                    {
+                        graph.Start = node;
+                    }
+
+                    if (cell.IsEnd)
+                    {
+                        graph.End = node;
+                    }
                 }
             }
 

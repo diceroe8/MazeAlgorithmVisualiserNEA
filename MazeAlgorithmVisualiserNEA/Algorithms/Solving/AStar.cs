@@ -1,10 +1,13 @@
-﻿using System;
+﻿using MazeAlgorithmVisualiserNEA.Models;
+using MazeAlgorithmVisualiserNEA.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
 {
-    internal class AStar
+    public class AStar
     {
+
     }
 }
