@@ -288,6 +288,23 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return false;
         }
 
+        public Cell GetRandomCell(Random random)
+        {
+            int row = random.Next(Rows);
+            int column = random.Next(Columns);
+
+            return GetCell(row, column);
+        }
+
+        public void SetRandomStartAndEnd(Random random)
+        {
+            Cell start = GetRandomCell(random);
+            Cell end = GetRandomCell(random);
+
+            start.SetStart(true);
+            end.SetEnd(true);
+        }
+
 
 
 

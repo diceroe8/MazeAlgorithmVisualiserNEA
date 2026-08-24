@@ -12,18 +12,15 @@ namespace MazeAlgorithmVisualiserNEA
     {
         // maze
         private Maze maze;
+        private Graph graph;
 
-        // renderers
-        private MazeRenderer mazeRenderer;
-        private GraphRenderer graphRenderer;
-        private PathRenderer pathRenderer;
 
         // buttons
         private Button generateButton;
 
-
-
         // generators
+
+        private IMazeGenerator mazeGenerator;
         private ImperfectMazeGenerator generator;
         private KruskalsGenerator kruskalsGenerator;
         private PrimsGenerator primsGenerator;
@@ -31,94 +28,148 @@ namespace MazeAlgorithmVisualiserNEA
         private RecursiveDivision recursiveDivisionGenerator;
 
         // solvers
-        private DFS DFSsolver;
-        private Dijkstra DijkstraSolver;
-
-        // pathfinding processes
-        private PathfindingProcess DFSsolution;
-        private PathfindingProcess BFSsolution;
-        private PathfindingProcess DijkstraSolution;
-        private PathfindingProcess AStarSolution;
+        private IMazeSolver dfsSolver;
+        private IMazeSolver bfsSolver;
+        private IMazeSolver dijkstraSolver;
+        private IMazeSolver aStarSolver;
 
 
+        // pathfinding results
+        private PathfindingProcess dfsSolution;
+        private PathfindingProcess bfsSolution;
+        private PathfindingProcess dijkstraSolution;
+        private PathfindingProcess aStarSolution;
 
 
-        private Graph graph;
+
+
+        // renderers
+        private MazeRenderer mazeRenderer;
+        private GraphRenderer graphRenderer;
+        private PathRenderer pathRenderer;
+        private PathfindingAnimator pathfindingAnimator;
 
         // converters
         private MazeToGraphConverter converter;
 
-        
+        // other
+        private Random random;
 
 
+
+
+        // constructor
         public MainForm()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
+            InitialiseObjects();
+            InitialiseUI();
+            InitialiseEvents();
+        }
 
-            // creates maze, generator, and renderer objects
+        private void InitialiseObjects()
+        {
+            // number generator
+            random = new Random();
+
+
+            // maze
             maze = new Maze(32, 32);
-            generator = new ImperfectMazeGenerator();
+
+
+            // maze generator
+            mazeGenerator = new ImperfectMazeGenerator();
+
+
+            // pathfinding 
+            dfsSolver = new DFS();
+            bfsSolver = new BFS();
+            dijkstraSolver = new Dijkstra();
+            aStarSolver = new AStar();
+
+
+            // converter
+            converter = new MazeToGraphConverter();
+
+
+            // renderers
             mazeRenderer = new MazeRenderer();
             graphRenderer = new GraphRenderer();
-            converter = new MazeToGraphConverter();
             pathRenderer = new PathRenderer();
-            DFSsolver = new DFS();
-            DijkstraSolver = new Dijkstra();
 
 
-            // create button
+            // animator
+            pathfindingAnimator = new PathfindingAnimator();
+
+            // animation speed
+            pathfindingAnimator.Interval = 50;
+        }
+
+        private void InitialiseUI()
+        {
             generateButton = new Button();
             generateButton.Text = "Generate maze";
             generateButton.Width = 150;
             generateButton.Dock = DockStyle.Right;
+
+            Controls.Add(generateButton);
+        }
+
+        private void InitialiseEvents()
+        {
             generateButton.Click += GenerateButton_Click;
 
-            // add button to form
-            this.Controls.Add(generateButton);
+            Paint += MainForm_Paint;
 
-            // paint event
-            this.Paint += MainForm_Paint;
-
-
-            Random rnd = new Random();
-
-
+            pathfindingAnimator.AnimationUpdated += PathfindingAnimator_AnimationUpdated;
         }
+
 
         private void GenerateButton_Click(object sender, EventArgs e)
         {
-            // regenerate maze
 
-            Random rnd = new Random();
-            maze = new Maze(32, 32);
-            generator.Generate(maze);
-
-            // choose start and end cells
-            Cell start = maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32));
-            Cell end = maze.GetCell(rnd.Next(0, 32), rnd.Next(0, 32));
-
-            start.SetStart(true);
-            end.SetEnd(true);
-
-            graph = converter.Convert(maze);
-
-
-
-            DFSsolution = DFSsolver.Solve(graph);
-            DijkstraSolution = DijkstraSolver.Solve(graph);
-
-
-
-            this.Invalidate();
+            pathfindingAnimator.Reset();
+            GenerateMaze(16, 16);
+            maze.SetRandomStartAndEnd(random);
+            ConvertMazeToGraph();
+            RunPathfindingAlgorithms();
+            StartAnimation(aStarSolution);
         }
 
-
-
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void GenerateMaze(int rows, int columns)
         {
-
+            maze = new Maze(rows, columns);
+            mazeGenerator.Generate(maze);
         }
+
+        private void ConvertMazeToGraph()
+        {
+            graph = converter.Convert(maze);
+        }
+
+        private void RunPathfindingAlgorithms()
+        {
+            dfsSolution = dfsSolver.Solve(graph);
+
+            bfsSolution = bfsSolver.Solve(graph);
+
+            dijkstraSolution = dijkstraSolver.Solve(graph);
+
+            aStarSolution = aStarSolver.Solve(graph);
+        }
+
+        private void StartAnimation(PathfindingProcess process)
+        {
+            pathfindingAnimator.Animate(process);
+        }
+
+        private void PathfindingAnimator_AnimationUpdated(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
+
 
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
@@ -129,14 +180,15 @@ namespace MazeAlgorithmVisualiserNEA
             e.Graphics.TranslateTransform(offsetX, offsetY);
             mazeRenderer.Draw(e.Graphics, maze);
 
-            if (DFSsolution != null || DijkstraSolution != null)
+            if (pathfindingAnimator != null)
             {
-                pathRenderer.Draw(e.Graphics, DijkstraSolution.Path, Color.LimeGreen);
-                //pathRenderer.Draw(e.Graphics, DFSsolution.Path, Color.Gold);
-                
+                pathfindingAnimator.Draw(e.Graphics, Color.LightBlue, Color.Red);
             }
             
+        }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
         }
     }
