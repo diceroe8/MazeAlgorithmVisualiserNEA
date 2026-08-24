@@ -10,18 +10,46 @@ namespace MazeAlgorithmVisualiserNEA
 {
     public partial class MainForm : Form
     {
+        // maze
         private Maze maze;
+
+        // renderers
         private MazeRenderer mazeRenderer;
-        private ImperfectMazeGenerator generator;
-        private Button generateButton;
         private GraphRenderer graphRenderer;
-        private Graph graph;
-        private MazeToGraphConverter converter;
         private PathRenderer pathRenderer;
+
+        // buttons
+        private Button generateButton;
+
+
+
+        // generators
+        private ImperfectMazeGenerator generator;
+        private KruskalsGenerator kruskalsGenerator;
+        private PrimsGenerator primsGenerator;
+        private RecursiveBackTracker recursiveBackTrackerGenerator;
+        private RecursiveDivision recursiveDivisionGenerator;
+
+        // solvers
         private DFS DFSsolver;
-        private BFS BFSsolver;
+        private Dijkstra DijkstraSolver;
+
+        // pathfinding processes
         private PathfindingProcess DFSsolution;
         private PathfindingProcess BFSsolution;
+        private PathfindingProcess DijkstraSolution;
+        private PathfindingProcess AStarSolution;
+
+
+
+
+        private Graph graph;
+
+        // converters
+        private MazeToGraphConverter converter;
+
+        
+
 
         public MainForm()
         {
@@ -35,11 +63,8 @@ namespace MazeAlgorithmVisualiserNEA
             converter = new MazeToGraphConverter();
             pathRenderer = new PathRenderer();
             DFSsolver = new DFS();
-            BFSsolver = new BFS();
+            DijkstraSolver = new Dijkstra();
 
-
-            //generate initial maze
-            // generator.Generate(maze);
 
             // create button
             generateButton = new Button();
@@ -80,7 +105,7 @@ namespace MazeAlgorithmVisualiserNEA
 
 
             DFSsolution = DFSsolver.Solve(graph);
-            BFSsolution = BFSsolver.Solve(graph);
+            DijkstraSolution = DijkstraSolver.Solve(graph);
 
 
 
@@ -104,10 +129,10 @@ namespace MazeAlgorithmVisualiserNEA
             e.Graphics.TranslateTransform(offsetX, offsetY);
             mazeRenderer.Draw(e.Graphics, maze);
 
-            if (DFSsolution != null || BFSsolution != null)
+            if (DFSsolution != null || DijkstraSolution != null)
             {
-                pathRenderer.Draw(e.Graphics, BFSsolution.Path, Color.LimeGreen);
-                pathRenderer.Draw(e.Graphics, DFSsolution.Path, Color.Gold);
+                pathRenderer.Draw(e.Graphics, DijkstraSolution.Path, Color.LimeGreen);
+                //pathRenderer.Draw(e.Graphics, DFSsolution.Path, Color.Gold);
                 
             }
             
