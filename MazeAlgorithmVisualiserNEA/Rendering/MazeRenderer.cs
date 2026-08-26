@@ -9,7 +9,13 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 {
     public class MazeRenderer
     {
-        private int cellSize = 20; // predefined size of cells, MAKE ABILITY TO CHANGE
+        private int cellSize = 20; // default size
+
+        public int CellSize
+        {
+            get {  return cellSize; }
+            set { cellSize = value; }
+        }
 
 
         public void Draw(Graphics graphics, Maze maze)

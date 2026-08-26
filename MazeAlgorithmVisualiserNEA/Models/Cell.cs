@@ -69,12 +69,6 @@ namespace MazeAlgorithmVisualiserNEA.Models
             RightWall = false;
         }
 
-        //MAYBE ADD A RESETVISITED HERE FOR PATHFINDING
-
-
-
-
-
 
         // HELPER METHODS
         // removes walls, used for maze generation algorithms

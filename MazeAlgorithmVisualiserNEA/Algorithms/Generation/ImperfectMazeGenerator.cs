@@ -9,7 +9,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Generation
     {
         private Random random = new Random();
 
-        private double loopPercentage =0.15;
+        private double loopPercentage = 0.30;
 
         public void Generate(Maze maze)
         {

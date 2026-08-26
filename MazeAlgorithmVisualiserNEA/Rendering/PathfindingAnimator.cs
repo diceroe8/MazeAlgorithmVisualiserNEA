@@ -13,7 +13,13 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 
         private int currentIndex;
         private bool explorationFinished;
-        private int cellSize = 20;
+        private int cellSize = 20; // default
+
+        public int CellSize
+        {
+            get { return cellSize; }
+            set { cellSize = value; }
+        }
 
         public int Interval
         {
@@ -91,27 +97,21 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
             int limit = Math.Min(currentIndex, process.VisitedNodes.Count);
             using (Brush brush = new SolidBrush(visitedColour))
             {
-                    for (int i = 0; i < limit; i++)
-                    {
-                        Point centre = GetCellCentre(process.VisitedNodes[i]);
+                for (int i = 0; i < limit; i++)
+                {
+                    Point centre = GetCellCentre(process.VisitedNodes[i]);
 
-                        graphics.FillRectangle(brush, centre.X - (cellSize / 4), centre.Y - (cellSize / 4), cellSize / 2, cellSize / 2);
+                    graphics.FillRectangle(brush, centre.X - (cellSize / 4), centre.Y - (cellSize / 4), cellSize / 2, cellSize / 2);
 
-                    }
+                }
             }
 
             if (explorationFinished)
             {
-                using (Font font = new Font("Arial", 16, FontStyle.Bold))
-                using (Brush textBrush = new SolidBrush(Color.Black)) 
-                {
-                    graphics.DrawString("END FOUND", font, textBrush, 200, 200);
-                }
+                
 
                 if (process.Path != null)
                 {
-
-
                     using (Pen pen = new Pen(pathColour, 5))
                     {
                         for (int i = 0; i < process.Path.Count - 1; i++)
@@ -156,7 +156,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
         }
     }
 }
-        
 
-    
+
+
 
