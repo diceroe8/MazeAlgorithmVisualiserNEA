@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace MazeAlgorithmVisualiserNEA.Models
 {
@@ -288,6 +289,8 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return false;
         }
 
+
+        // setting start and end methods
         public Cell GetRandomCell(Random random)
         {
             int row = random.Next(Rows);
@@ -296,13 +299,71 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return GetCell(row, column);
         }
 
+        public void SetStart(Cell cell)
+        {
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int column =  0; column < Columns; column++)
+                {
+                    cells[row, column].SetStart(false);
+                }
+            }
+
+            cell.SetStart(true); // ensures only one cell is the start
+        }
+
+        public void SetEnd(Cell cell)
+        {
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int column = 0; column < Columns; column++)
+                {
+                    cells[row, column].SetEnd(false);
+                }
+            }
+            cell.SetEnd(true); // ensures only one cell is the end
+        }
+
+        public bool HasStartAndEnd()
+        {
+            bool hasStart = false;
+            bool hasEnd = false;
+
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int column = 0; column < Columns; column++)
+                {
+                    Cell cell = cells[row, column];
+
+                    if (cell.IsStart)
+                    {
+                        hasStart = true;
+                    }
+
+                    if (cell.IsEnd)
+                    {
+                        hasEnd = true;
+                    }
+                }
+            }
+
+            return hasStart && hasEnd; // checks if the maze has a start and end
+            // needed before running pathfinding algorithms
+        }
+
+
         public void SetRandomStartAndEnd(Random random)
         {
             Cell start = GetRandomCell(random);
             Cell end = GetRandomCell(random);
 
-            start.SetStart(true);
-            end.SetEnd(true);
+            while (end == start)
+            {
+                end = GetRandomCell(random);
+            }
+
+            SetStart(start);
+            SetEnd(end);
         }
 
 

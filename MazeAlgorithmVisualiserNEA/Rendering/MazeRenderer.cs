@@ -72,7 +72,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 
             if (cell.IsStart)
             {
-                using (Brush b = new SolidBrush(Color.DarkRed))
+                using (Brush b = new SolidBrush(Color.DarkGreen))
                 {
                     graphics.FillRectangle(b, x + 1, y + 1, cellSize - 1, cellSize - 1);
                 }
@@ -80,7 +80,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 
             if (cell.IsEnd)
             {
-                using (Brush b = new SolidBrush(Color.DarkGreen))
+                using (Brush b = new SolidBrush(Color.DarkRed))
                 {
                     graphics.FillRectangle(b, x + 1, y + 1, cellSize - 1, cellSize - 1);
                 }
