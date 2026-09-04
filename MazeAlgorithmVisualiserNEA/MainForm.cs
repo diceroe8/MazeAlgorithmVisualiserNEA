@@ -14,14 +14,24 @@ namespace MazeAlgorithmVisualiserNEA
         private Maze maze;
         private Graph graph;
 
-        // buttons and labels
+        // UI
         private Button generateButton;
         private Button solveButton;
-        private Label resultsLabel;
         private Button setStartButton;
         private Button setEndButton;
         private Button setRandomStartEndButton;
-
+        private Label mazeSizeLabel;
+        private Label resultsLabel;
+        private Label generationAlgorithmLabel;
+        private Label algorithm1Label;
+        private Label algorithm2Label;
+        private Label rowsLabel;
+        private Label columnsLabel;
+        private ComboBox generationAlgorithmComboBox;
+        private ComboBox algorithm1ComboBox;
+        private ComboBox algorithm2ComboBox;
+        private NumericUpDown rowsInput;
+        private NumericUpDown columnsInput;
 
         // generators
         private IMazeGenerator mazeGenerator;
@@ -74,12 +84,9 @@ namespace MazeAlgorithmVisualiserNEA
             // maze
             maze = new Maze(10, 10);
 
-            // maze generator
-            mazeGenerator = new ImperfectMazeGenerator();
-
             // pathfinding 
-            solver1 = new BFS();
-            solver2 = new AStar(); // CHANGE THESE TO CHANGE THE PATHFINDING ALGORITHM
+            solver1 = null;
+            solver2 = null; // CHANGE THESE TO CHANGE THE PATHFINDING ALGORITHM
 
             // converter
             converter = new MazeToGraphConverter();
@@ -100,39 +107,148 @@ namespace MazeAlgorithmVisualiserNEA
 
         private void InitialiseUI()
         {
+            // generation algorithm label
+            generationAlgorithmLabel = new Label();
+            generationAlgorithmLabel.Text = "Generation Algorithm:";
+            generationAlgorithmLabel.AutoSize = true;
+            generationAlgorithmLabel.Location = new Point(ClientRectangle.Width - 160, 20);
+            generationAlgorithmLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // generation algorithm drop down
+            generationAlgorithmComboBox = new ComboBox();
+            generationAlgorithmComboBox.Size = new Size(140, 30);
+            generationAlgorithmComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            generationAlgorithmComboBox.Items.Add("Imperfect Maze");
+            generationAlgorithmComboBox.Items.Add("Kruskal's");
+            generationAlgorithmComboBox.Items.Add("Prim's");
+            generationAlgorithmComboBox.Items.Add("Recursive Backtracker");
+            generationAlgorithmComboBox.Items.Add("Recursive Division");
+
+            generationAlgorithmComboBox.SelectedIndex = 0;
+            generationAlgorithmComboBox.Location = new Point(generationAlgorithmLabel.Left, generationAlgorithmLabel.Bottom);
+            generationAlgorithmComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // maze size label
+            mazeSizeLabel = new Label();
+            mazeSizeLabel.Text = "Select maze size";
+            mazeSizeLabel.AutoSize = true;
+            mazeSizeLabel.Location = new Point(generationAlgorithmComboBox.Left, generationAlgorithmComboBox.Bottom + 10);
+            mazeSizeLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // rows label
+            rowsLabel = new Label();
+            rowsLabel.Text = "Rows:";
+            rowsLabel.AutoSize = true;
+            rowsLabel.Location = new Point(mazeSizeLabel.Left, mazeSizeLabel.Bottom + 10);
+            rowsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // rows input
+            rowsInput = new NumericUpDown();
+            rowsInput.Minimum = 5;
+            rowsInput.Maximum = 128;
+            rowsInput.Value = 32;
+            rowsInput.Size = new Size(140, 30);
+            rowsInput.Location = new Point(rowsLabel.Left, rowsLabel.Bottom + 5);
+            rowsInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // columns label
+            columnsLabel = new Label();
+            columnsLabel.Text = "Columns:";
+            columnsLabel.AutoSize = true;
+            columnsLabel.Location = new Point(rowsInput.Left, rowsInput.Bottom + 5);
+            columnsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // columns input
+            columnsInput = new NumericUpDown();
+            columnsInput.Minimum = 5;
+            columnsInput.Maximum = 128;
+            columnsInput.Value = 32;
+            columnsInput.Size = new Size(140, 30);
+            columnsInput.Location = new Point(columnsLabel.Left, columnsLabel.Bottom + 5);
+            columnsInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // generate maze button
             generateButton = new Button();
             generateButton.Text = "Generate maze";
-            generateButton.Size = new Size(120, 30);
-            generateButton.Location = new Point(ClientRectangle.Width - 140, 20);
+            generateButton.Size = new Size(140, 30);
+            generateButton.Location = new Point(columnsInput.Left, columnsInput.Bottom + 10);
             generateButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+
+            // algorithm 1 label
+            algorithm1Label = new Label();
+            algorithm1Label.Text = "Algorithm 1:";
+            algorithm1Label.AutoSize = true;
+            algorithm1Label.Location = new Point(generateButton.Left, generateButton.Bottom + 50);
+            algorithm1Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // algorithm 1 selection dropdown
+            algorithm1ComboBox = new ComboBox();
+            algorithm1ComboBox.Size = new Size(140, 30);
+            algorithm1ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            algorithm1ComboBox.Items.Add("BFS");
+            algorithm1ComboBox.Items.Add("DFS");
+            algorithm1ComboBox.Items.Add("Dijkstra");
+            algorithm1ComboBox.Items.Add("A*");
+
+            algorithm1ComboBox.SelectedIndex = 0;
+
+            algorithm1ComboBox.Location = new Point(generateButton.Left, algorithm1Label.Bottom + 5);
+
+            algorithm1ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // algorithm 2 label
+            algorithm2Label = new Label();
+            algorithm2Label.Text = "Algorithm 2:";
+            algorithm2Label.AutoSize = true;
+            algorithm2Label.Location = new Point(generateButton.Left, algorithm1ComboBox.Bottom + 10);
+            algorithm2Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+
+            // algorithm 2 selection dropdown
+            algorithm2ComboBox = new ComboBox();
+            algorithm2ComboBox.Size = new Size(140, 30);
+            algorithm2ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            algorithm2ComboBox.Items.Add("BFS");
+            algorithm2ComboBox.Items.Add("DFS");
+            algorithm2ComboBox.Items.Add("Dijkstra");
+            algorithm2ComboBox.Items.Add("A*");
+
+            algorithm2ComboBox.SelectedIndex = 3;
+
+            algorithm2ComboBox.Location = new Point(generateButton.Left, algorithm2Label.Bottom + 5);
+
+            algorithm2ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
 
             // set start button
             setStartButton = new Button();
             setStartButton.Text = "Set Start";
-            setStartButton.Size = new Size(120, 30);
-            setStartButton.Location = new Point(generateButton.Left, generateButton.Bottom + 10);
+            setStartButton.Size = new Size(140, 30);
+            setStartButton.Location = new Point(algorithm2ComboBox.Left, algorithm2ComboBox.Bottom + 10);
             setStartButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // set end button
             setEndButton = new Button();
             setEndButton.Text = "Set End";
-            setEndButton.Size = new Size(100, 30);
+            setEndButton.Size = new Size(140, 30);
             setEndButton.Location = new Point(setStartButton.Left, setStartButton.Bottom + 10);
             setEndButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // random start end button
             setRandomStartEndButton = new Button();
             setRandomStartEndButton.Text = "Random Start/End";
-            setRandomStartEndButton.Size = new Size(120, 30);
+            setRandomStartEndButton.Size = new Size(140, 30);
             setRandomStartEndButton.Location = new Point(setEndButton.Left, setEndButton.Bottom + 10);
             setRandomStartEndButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // solve button
             solveButton = new Button();
             solveButton.Text = "Solve maze";
-            solveButton.Size = new Size(100, 30);
+            solveButton.Size = new Size(140, 30);
             solveButton.Location = new Point(setRandomStartEndButton.Left, setRandomStartEndButton.Bottom + 10);
             solveButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             solveButton.Enabled = false;
@@ -140,7 +256,7 @@ namespace MazeAlgorithmVisualiserNEA
             // results label
             resultsLabel = new Label();
             resultsLabel.Text = "";
-            resultsLabel.Size = new Size(150, 100);
+            resultsLabel.Size = new Size(140, 100);
             resultsLabel.Location = new Point(solveButton.Left, solveButton.Bottom + 30);
             resultsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             resultsLabel.Font = new Font("Arial", 9, FontStyle.Regular);
@@ -151,9 +267,18 @@ namespace MazeAlgorithmVisualiserNEA
             Controls.Add(setStartButton);
             Controls.Add(setEndButton);
             Controls.Add(setRandomStartEndButton);
-
+            Controls.Add(generationAlgorithmComboBox);
+            Controls.Add(generationAlgorithmLabel);
+            Controls.Add(algorithm1Label);
+            Controls.Add(algorithm2Label);
+            Controls.Add(algorithm1ComboBox);
+            Controls.Add(algorithm2ComboBox);
+            Controls.Add(mazeSizeLabel);
+            Controls.Add(rowsLabel);
+            Controls.Add(rowsInput);
+            Controls.Add(columnsLabel);
+            Controls.Add(columnsInput);
         }
-
         private void InitialiseEvents()
         {
             generateButton.Click += GenerateButton_Click;
@@ -186,6 +311,12 @@ namespace MazeAlgorithmVisualiserNEA
             settingStart = false;
             settingEnd = false;
 
+
+            // sets maze size
+
+            mazeRows = (int)rowsInput.Value;
+            mazeColumns = (int)columnsInput.Value;
+
             // fits maze to size screen
             FitMazeToScreen();
             mazeRenderer.CellSize = cellSize;
@@ -197,19 +328,16 @@ namespace MazeAlgorithmVisualiserNEA
             Invalidate();
 
         }
-
         private void SetStartButton_Click(object sender, EventArgs e)
         {
             settingStart = true;
             settingEnd = false;
         }
-
         private void SetEndButton_Click(object sender, EventArgs e)
         {
             settingStart = false;
             settingEnd = true;
         }
-
         private void RandomStartEndButton_Click(object sender, EventArgs e)
         {
             maze.SetRandomStartAndEnd(random);
@@ -218,7 +346,6 @@ namespace MazeAlgorithmVisualiserNEA
             solveButton.Enabled = true;
             Invalidate();
         }
-
         private void SolveButton_Click(object sender, EventArgs e)
         {
             // reset animators 
@@ -238,7 +365,6 @@ namespace MazeAlgorithmVisualiserNEA
 
             solveButton.Enabled = false;
         }
-
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
             // clicks dont do anything if not selecting start end
@@ -300,29 +426,68 @@ namespace MazeAlgorithmVisualiserNEA
 
             Invalidate();
         }
-
         private void GenerateMaze(int rows, int columns)
         {
+            mazeGenerator = GetMazeGenerator(generationAlgorithmComboBox.SelectedItem.ToString());
             maze = new Maze(rows, columns);
             mazeGenerator.Generate(maze);
         }
-
         private void ConvertMazeToGraph()
         {
             graph = converter.Convert(maze);
         }
-
         private void RunPathfindingAlgorithms()
         {
+            solver1 = GetSolver(algorithm1ComboBox.SelectedItem.ToString());
+            solver2 = GetSolver(algorithm2ComboBox.SelectedItem.ToString());
+
+
             solution1 = solver1.Solve(graph);
             solution2 = solver2.Solve(graph);
         }
-
         private void StartAnimation(PathfindingProcess process, PathfindingAnimator animator)
         {
             animator.Animate(process);
         }
+        private IMazeSolver GetSolver(string algorithm)
+        {
+            switch (algorithm)
+            {
+                case "BFS":
+                    return new BFS();
+                case "DFS":
+                    return new DFS();
+                case "Dijkstra":
+                    return new Dijkstra();
+                case "A*":
+                    return new AStar();
+                default:
+                    return new BFS();
+            }
+        }
+        private IMazeGenerator GetMazeGenerator(string algorithm)
+        {
+            switch (algorithm)
+            {
+                case "Imperfect Maze":
+                    return new ImperfectMazeGenerator();
 
+                case "Kruskal's":
+                    return new KruskalsGenerator();
+
+                case "Prim's":
+                    return new PrimsGenerator();
+
+                case "Recursive Backtracker":
+                    return new RecursiveBackTracker();
+
+                case "Recursive Division":
+                    return new RecursiveDivision();
+
+                default:
+                    return new ImperfectMazeGenerator();
+            }
+        }
         private void PathfindingAnimator_AnimationUpdated(object sender, EventArgs e)
         {
             Invalidate();
@@ -332,15 +497,17 @@ namespace MazeAlgorithmVisualiserNEA
                 if (animator1.ExplorationFinished && animator2.ExplorationFinished)
                 {
                     // make sure path exists
-                    int dfsLength = solution1 != null && solution1.Path != null ? solution1.Path.Count : 0;
-                    int aStarLength = solution2 != null && solution2.Path != null ? solution2.Path.Count : 0;
+                    int algorithm1Length = solution1 != null && solution1.Path != null ? solution1.Path.Count : 0;
+                    int algorithm2Length = solution2 != null && solution2.Path != null ? solution2.Path.Count : 0;
 
                     // stats display
-                    resultsLabel.Text = "END FOUND!\n\n" + $"A1 Path Length: {dfsLength}\n" + $"A2 Path Length: {aStarLength}";
+                    resultsLabel.Text =
+                            "END FOUND!\n\n" +
+                            $"{algorithm1ComboBox.SelectedItem}: {algorithm1Length}\n" +
+                            $"{algorithm2ComboBox.SelectedItem}: {algorithm2Length}";
                 }
             }
         }
-
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
             int mazeWidth = maze.Columns * cellSize; // calculate total maze width
@@ -366,12 +533,10 @@ namespace MazeAlgorithmVisualiserNEA
             }
 
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
-
         private void FitMazeToScreen()
         {
             int rightSideBuffer = 180;
@@ -381,7 +546,7 @@ namespace MazeAlgorithmVisualiserNEA
             int availableHeight = ClientRectangle.Height - topBottomBuffer;
 
             int cellWidth = availableWidth / mazeColumns;
-            int cellHeight = availableHeight / mazeColumns;
+            int cellHeight = availableHeight / mazeRows;
 
             cellSize = Math.Min(cellWidth, cellHeight);
 
@@ -391,8 +556,6 @@ namespace MazeAlgorithmVisualiserNEA
             }
 
         }
-
-
     }
 }
 

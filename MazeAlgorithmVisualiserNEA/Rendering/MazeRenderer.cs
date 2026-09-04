@@ -64,10 +64,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 
             if (cell.Visited)
             {
-                using (Brush b = new SolidBrush(Color.LightBlue))
-                {
-                    graphics.FillRectangle(b, x + 1, y + 1, cellSize - 1, cellSize - 1);
-                }
+                
             }
 
             if (cell.IsStart)
