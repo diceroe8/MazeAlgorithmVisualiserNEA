@@ -365,9 +365,5 @@ namespace MazeAlgorithmVisualiserNEA.Models
             SetStart(start);
             SetEnd(end);
         }
-
-
-
-
     }
 }

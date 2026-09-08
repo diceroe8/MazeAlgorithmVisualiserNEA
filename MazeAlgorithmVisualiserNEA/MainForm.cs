@@ -1,10 +1,11 @@
-using MazeAlgorithmVisualiserNEA.Models;
-using MazeAlgorithmVisualiserNEA.Rendering;
 using MazeAlgorithmVisualiserNEA.Algorithms;
 using MazeAlgorithmVisualiserNEA.Algorithms.Generation;
-using MazeAlgorithmVisualiserNEA.DataStructures;
-using MazeAlgorithmVisualiserNEA.Converters;
 using MazeAlgorithmVisualiserNEA.Algorithms.Solving;
+using MazeAlgorithmVisualiserNEA.Converters;
+using MazeAlgorithmVisualiserNEA.DataStructures;
+using MazeAlgorithmVisualiserNEA.Models;
+using MazeAlgorithmVisualiserNEA.Rendering;
+using Microsoft.VisualBasic.Devices;
 
 namespace MazeAlgorithmVisualiserNEA
 {
@@ -20,6 +21,7 @@ namespace MazeAlgorithmVisualiserNEA
         private Button setStartButton;
         private Button setEndButton;
         private Button setRandomStartEndButton;
+        private Button editWallsButton;
         private Label mazeSizeLabel;
         private Label resultsLabel;
         private Label generationAlgorithmLabel;
@@ -27,11 +29,13 @@ namespace MazeAlgorithmVisualiserNEA
         private Label algorithm2Label;
         private Label rowsLabel;
         private Label columnsLabel;
+        private Label tickSpeedInputLabel;
         private ComboBox generationAlgorithmComboBox;
         private ComboBox algorithm1ComboBox;
         private ComboBox algorithm2ComboBox;
         private NumericUpDown rowsInput;
         private NumericUpDown columnsInput;
+        private NumericUpDown tickSpeedInput;
 
         // generators
         private IMazeGenerator mazeGenerator;
@@ -49,7 +53,6 @@ namespace MazeAlgorithmVisualiserNEA
         private PathfindingAnimator animator1;
         private PathfindingAnimator animator2;
 
-
         // renderers
         private MazeRenderer mazeRenderer;
         private GraphRenderer graphRenderer;
@@ -65,6 +68,8 @@ namespace MazeAlgorithmVisualiserNEA
         private int mazeColumns = 32;
         bool settingStart = false;
         bool settingEnd = false;
+        bool editingWalls = false;
+
 
         // constructor
         public MainForm()
@@ -206,7 +211,6 @@ namespace MazeAlgorithmVisualiserNEA
             algorithm2Label.Location = new Point(generateButton.Left, algorithm1ComboBox.Bottom + 10);
             algorithm2Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
-
             // algorithm 2 selection dropdown
             algorithm2ComboBox = new ComboBox();
             algorithm2ComboBox.Size = new Size(140, 30);
@@ -222,7 +226,6 @@ namespace MazeAlgorithmVisualiserNEA
             algorithm2ComboBox.Location = new Point(generateButton.Left, algorithm2Label.Bottom + 5);
 
             algorithm2ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-
 
             // set start button
             setStartButton = new Button();
@@ -245,11 +248,18 @@ namespace MazeAlgorithmVisualiserNEA
             setRandomStartEndButton.Location = new Point(setEndButton.Left, setEndButton.Bottom + 10);
             setRandomStartEndButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
+            // editing walls
+            editWallsButton = new Button();
+            editWallsButton.Text = "Edit walls";
+            editWallsButton.Size = new Size(140, 30);
+            editWallsButton.Location = new Point(setRandomStartEndButton.Left, setRandomStartEndButton.Bottom + 10);
+            editWallsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
             // solve button
             solveButton = new Button();
             solveButton.Text = "Solve maze";
             solveButton.Size = new Size(140, 30);
-            solveButton.Location = new Point(setRandomStartEndButton.Left, setRandomStartEndButton.Bottom + 10);
+            solveButton.Location = new Point(editWallsButton.Left, editWallsButton.Bottom + 10);
             solveButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             solveButton.Enabled = false;
 
@@ -261,6 +271,24 @@ namespace MazeAlgorithmVisualiserNEA
             resultsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             resultsLabel.Font = new Font("Arial", 9, FontStyle.Regular);
 
+
+            // tick speed input label
+            tickSpeedInputLabel = new Label();
+            tickSpeedInputLabel.Text = "Select animation speed: 0 - 100";
+            tickSpeedInputLabel.Size = new Size(140, 100);
+            tickSpeedInputLabel.Location = new Point(resultsLabel.Left, resultsLabel.Bottom + 30);
+            tickSpeedInputLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+
+            // tick speed setter
+            tickSpeedInput = new NumericUpDown();
+            tickSpeedInput.Minimum = 1;
+            tickSpeedInput.Maximum = 100;
+            tickSpeedInput.Value = 5;
+            tickSpeedInput.Location = new Point(tickSpeedInputLabel.Left, tickSpeedInputLabel.Bottom);
+            tickSpeedInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // controls
             Controls.Add(generateButton);
             Controls.Add(solveButton);
             Controls.Add(resultsLabel);
@@ -278,6 +306,9 @@ namespace MazeAlgorithmVisualiserNEA
             Controls.Add(rowsInput);
             Controls.Add(columnsLabel);
             Controls.Add(columnsInput);
+            Controls.Add(editWallsButton);
+            Controls.Add(tickSpeedInputLabel);
+            Controls.Add(tickSpeedInput);
         }
         private void InitialiseEvents()
         {
@@ -286,6 +317,7 @@ namespace MazeAlgorithmVisualiserNEA
             setStartButton.Click += SetStartButton_Click;
             setEndButton.Click += SetEndButton_Click;
             setRandomStartEndButton.Click += RandomStartEndButton_Click;
+            editWallsButton.Click += EditWallsButton_Click;
 
             solveButton.Click += SolveButton_Click;
 
@@ -310,7 +342,6 @@ namespace MazeAlgorithmVisualiserNEA
             // stop selecting start end
             settingStart = false;
             settingEnd = false;
-
 
             // sets maze size
 
@@ -346,6 +377,24 @@ namespace MazeAlgorithmVisualiserNEA
             solveButton.Enabled = true;
             Invalidate();
         }
+
+        private void EditWallsButton_Click(object sender, EventArgs e)
+        {
+            editingWalls = !editingWalls;
+            settingStart = false; 
+            settingEnd = false;
+
+            if (editingWalls)
+            {
+                editWallsButton.Text = "Finish editing";
+            }
+            else
+            {
+                editWallsButton.Text = "Edit walls";
+            }
+        }
+
+
         private void SolveButton_Click(object sender, EventArgs e)
         {
             // reset animators 
@@ -354,6 +403,9 @@ namespace MazeAlgorithmVisualiserNEA
 
             animator1.CellSize = cellSize;
             animator2.CellSize = cellSize;
+
+            animator1.Interval = 101 - (int)tickSpeedInput.Value;
+            animator2.Interval = 101 - (int)tickSpeedInput.Value;
 
             // run conversion and pathfinding
             ConvertMazeToGraph();
@@ -367,9 +419,14 @@ namespace MazeAlgorithmVisualiserNEA
         }
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
-            // clicks dont do anything if not selecting start end
-            if (settingStart == false && settingEnd == false)
+            // clicks dont do anything if not selecting start end and not editing walls
+            if (settingStart == false && settingEnd == false && editingWalls == false)
             {
+                return;
+            }
+            if (editingWalls)
+            {
+                ToggleWall(e.X, e.Y);
                 return;
             }
 
@@ -426,6 +483,37 @@ namespace MazeAlgorithmVisualiserNEA
 
             Invalidate();
         }
+        private void MainForm_Paint(object sender, PaintEventArgs e)
+        {
+            int mazeWidth = maze.Columns * cellSize; // calculate total maze width
+
+            int paddingRight = 20;
+            int paddingDown = 20;
+
+            int offsetX = 20;
+            // int offsetX = ClientRectangle.Width - generateButton.Width - mazeWidth - paddingRight;
+            int offsetY = paddingDown;
+
+            e.Graphics.TranslateTransform(offsetX, offsetY);
+            mazeRenderer.Draw(e.Graphics, maze);
+
+            if (animator1 != null)
+            {
+                animator1.Draw(e.Graphics, Color.Black, Color.Red);
+            }
+
+            if (animator2 != null)
+            {
+                animator2.Draw(e.Graphics, Color.DarkBlue, Color.Green);
+            }
+
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        // needed methods
         private void GenerateMaze(int rows, int columns)
         {
             mazeGenerator = GetMazeGenerator(generationAlgorithmComboBox.SelectedItem.ToString());
@@ -488,6 +576,81 @@ namespace MazeAlgorithmVisualiserNEA
                     return new ImperfectMazeGenerator();
             }
         }
+
+        private void ToggleWall(int mouseX, int mouseY)
+        {
+            int offsetX = 20;
+            int offsetY = 20;
+
+            // convert mouse position to relative maze position
+            int x = mouseX - offsetX;
+            int y = mouseY - offsetY;
+
+            // make sure click in inside maze
+            if (x < 0 || y < 0 || x >= maze.Columns * cellSize || y >= maze.Rows * cellSize)
+            {
+                return;
+            }
+
+            int column = x / cellSize;
+            int row = y / cellSize;
+
+            Cell cell = maze.GetCell(row, column);
+
+            int xRemainder = x % cellSize;
+            int yRemainder = y % cellSize;
+
+            // find which wall is closest to the click
+            int distanceToVertical = Math.Min(xRemainder, cellSize - xRemainder);
+            int distanceToHorizontal = Math.Min(yRemainder, cellSize - yRemainder);
+
+            Direction direction;
+
+            if(distanceToVertical < distanceToHorizontal)
+            {
+                if (xRemainder < cellSize / 2)
+                {
+                    direction = Direction.Left;
+                }
+                else
+                {
+                    direction = Direction.Bottom;
+                }
+
+            }
+            else
+            {
+                if (yRemainder < cellSize / 2)
+                {
+                    direction = Direction.Top;
+                }
+                else
+                {
+                    direction = Direction.Bottom;
+                }
+            }
+
+            Cell neighbour = maze.GetNeighbour(cell, direction);
+
+            if (neighbour == null) // dont allow to edit outer walls
+            {
+                return;
+            }
+
+            if (maze.HasWallBetween(cell, neighbour))
+            {
+                maze.RemoveWallBetween(cell, neighbour);
+            }
+            else
+            {
+                maze.AddWallBetween(cell, neighbour);
+            }
+
+            Invalidate();
+
+
+        }
+
         private void PathfindingAnimator_AnimationUpdated(object sender, EventArgs e)
         {
             Invalidate();
@@ -508,35 +671,7 @@ namespace MazeAlgorithmVisualiserNEA
                 }
             }
         }
-        private void MainForm_Paint(object sender, PaintEventArgs e)
-        {
-            int mazeWidth = maze.Columns * cellSize; // calculate total maze width
 
-            int paddingRight = 20;
-            int paddingDown = 20;
-
-            int offsetX = 20;
-            // int offsetX = ClientRectangle.Width - generateButton.Width - mazeWidth - paddingRight;
-            int offsetY = paddingDown;
-
-            e.Graphics.TranslateTransform(offsetX, offsetY);
-            mazeRenderer.Draw(e.Graphics, maze);
-
-            if (animator1 != null)
-            {
-                animator1.Draw(e.Graphics, Color.Black, Color.Red);
-            }
-
-            if (animator2 != null)
-            {
-                animator2.Draw(e.Graphics, Color.DarkBlue, Color.Green);
-            }
-
-        }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
         private void FitMazeToScreen()
         {
             int rightSideBuffer = 180;
