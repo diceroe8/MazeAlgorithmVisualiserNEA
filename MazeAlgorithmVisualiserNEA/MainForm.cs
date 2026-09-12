@@ -22,6 +22,9 @@ namespace MazeAlgorithmVisualiserNEA
         private Button setEndButton;
         private Button setRandomStartEndButton;
         private Button editWallsButton;
+        private Button pauseButton;
+        private Button stepButton;
+        private Button resetAnimationButton;
         private Label mazeSizeLabel;
         private Label resultsLabel;
         private Label generationAlgorithmLabel;
@@ -118,34 +121,34 @@ namespace MazeAlgorithmVisualiserNEA
             generationAlgorithmLabel.AutoSize = true;
             generationAlgorithmLabel.Location = new Point(ClientRectangle.Width - 160, 20);
             generationAlgorithmLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            generationAlgorithmLabel.Font = new Font("Arial", 10, FontStyle.Bold);
 
             // generation algorithm drop down
             generationAlgorithmComboBox = new ComboBox();
             generationAlgorithmComboBox.Size = new Size(140, 30);
             generationAlgorithmComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-
             generationAlgorithmComboBox.Items.Add("Imperfect Maze");
             generationAlgorithmComboBox.Items.Add("Kruskal's");
             generationAlgorithmComboBox.Items.Add("Prim's");
             generationAlgorithmComboBox.Items.Add("Recursive Backtracker");
             generationAlgorithmComboBox.Items.Add("Recursive Division");
-
             generationAlgorithmComboBox.SelectedIndex = 0;
-            generationAlgorithmComboBox.Location = new Point(generationAlgorithmLabel.Left, generationAlgorithmLabel.Bottom);
+            generationAlgorithmComboBox.Location = new Point(generationAlgorithmLabel.Left, generationAlgorithmLabel.Bottom + 5);
             generationAlgorithmComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // maze size label
             mazeSizeLabel = new Label();
             mazeSizeLabel.Text = "Select maze size";
             mazeSizeLabel.AutoSize = true;
-            mazeSizeLabel.Location = new Point(generationAlgorithmComboBox.Left, generationAlgorithmComboBox.Bottom + 10);
+            mazeSizeLabel.Location = new Point(generationAlgorithmComboBox.Left, generationAlgorithmComboBox.Bottom + 12);
             mazeSizeLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            mazeSizeLabel.Font = new Font("Arial", 10, FontStyle.Bold);
 
             // rows label
             rowsLabel = new Label();
             rowsLabel.Text = "Rows:";
             rowsLabel.AutoSize = true;
-            rowsLabel.Location = new Point(mazeSizeLabel.Left, mazeSizeLabel.Bottom + 10);
+            rowsLabel.Location = new Point(mazeSizeLabel.Left, mazeSizeLabel.Bottom + 6);
             rowsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // rows input
@@ -154,14 +157,14 @@ namespace MazeAlgorithmVisualiserNEA
             rowsInput.Maximum = 128;
             rowsInput.Value = 32;
             rowsInput.Size = new Size(140, 30);
-            rowsInput.Location = new Point(rowsLabel.Left, rowsLabel.Bottom + 5);
+            rowsInput.Location = new Point(rowsLabel.Left, rowsLabel.Bottom + 3);
             rowsInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // columns label
             columnsLabel = new Label();
             columnsLabel.Text = "Columns:";
             columnsLabel.AutoSize = true;
-            columnsLabel.Location = new Point(rowsInput.Left, rowsInput.Bottom + 5);
+            columnsLabel.Location = new Point(rowsInput.Left, rowsInput.Bottom + 8);
             columnsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // columns input
@@ -170,38 +173,34 @@ namespace MazeAlgorithmVisualiserNEA
             columnsInput.Maximum = 128;
             columnsInput.Value = 32;
             columnsInput.Size = new Size(140, 30);
-            columnsInput.Location = new Point(columnsLabel.Left, columnsLabel.Bottom + 5);
+            columnsInput.Location = new Point(columnsLabel.Left, columnsLabel.Bottom + 3);
             columnsInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // generate maze button
             generateButton = new Button();
             generateButton.Text = "Generate maze";
             generateButton.Size = new Size(140, 30);
-            generateButton.Location = new Point(columnsInput.Left, columnsInput.Bottom + 10);
+            generateButton.Location = new Point(columnsInput.Left, columnsInput.Bottom + 12);
             generateButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-
 
             // algorithm 1 label
             algorithm1Label = new Label();
             algorithm1Label.Text = "Algorithm 1:";
             algorithm1Label.AutoSize = true;
-            algorithm1Label.Location = new Point(generateButton.Left, generateButton.Bottom + 50);
+            algorithm1Label.Location = new Point(generateButton.Left, generateButton.Bottom + 15);
             algorithm1Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            algorithm1Label.Font = new Font("Arial", 10, FontStyle.Bold);
 
             // algorithm 1 selection dropdown
             algorithm1ComboBox = new ComboBox();
             algorithm1ComboBox.Size = new Size(140, 30);
             algorithm1ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-
             algorithm1ComboBox.Items.Add("BFS");
             algorithm1ComboBox.Items.Add("DFS");
             algorithm1ComboBox.Items.Add("Dijkstra");
             algorithm1ComboBox.Items.Add("A*");
-
             algorithm1ComboBox.SelectedIndex = 0;
-
-            algorithm1ComboBox.Location = new Point(generateButton.Left, algorithm1Label.Bottom + 5);
-
+            algorithm1ComboBox.Location = new Point(generateButton.Left, algorithm1Label.Bottom + 3);
             algorithm1ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // algorithm 2 label
@@ -210,103 +209,127 @@ namespace MazeAlgorithmVisualiserNEA
             algorithm2Label.AutoSize = true;
             algorithm2Label.Location = new Point(generateButton.Left, algorithm1ComboBox.Bottom + 10);
             algorithm2Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            algorithm2Label.Font = new Font("Arial", 10, FontStyle.Bold);
 
             // algorithm 2 selection dropdown
             algorithm2ComboBox = new ComboBox();
             algorithm2ComboBox.Size = new Size(140, 30);
             algorithm2ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-
             algorithm2ComboBox.Items.Add("BFS");
             algorithm2ComboBox.Items.Add("DFS");
             algorithm2ComboBox.Items.Add("Dijkstra");
             algorithm2ComboBox.Items.Add("A*");
-
             algorithm2ComboBox.SelectedIndex = 3;
-
-            algorithm2ComboBox.Location = new Point(generateButton.Left, algorithm2Label.Bottom + 5);
-
+            algorithm2ComboBox.Location = new Point(generateButton.Left, algorithm2Label.Bottom + 3);
             algorithm2ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // set start button
             setStartButton = new Button();
             setStartButton.Text = "Set Start";
             setStartButton.Size = new Size(140, 30);
-            setStartButton.Location = new Point(algorithm2ComboBox.Left, algorithm2ComboBox.Bottom + 10);
+            setStartButton.Location = new Point(algorithm2ComboBox.Left, algorithm2ComboBox.Bottom + 15);
             setStartButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // set end button
             setEndButton = new Button();
             setEndButton.Text = "Set End";
             setEndButton.Size = new Size(140, 30);
-            setEndButton.Location = new Point(setStartButton.Left, setStartButton.Bottom + 10);
+            setEndButton.Location = new Point(setStartButton.Left, setStartButton.Bottom + 6);
             setEndButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // random start end button
             setRandomStartEndButton = new Button();
             setRandomStartEndButton.Text = "Random Start/End";
             setRandomStartEndButton.Size = new Size(140, 30);
-            setRandomStartEndButton.Location = new Point(setEndButton.Left, setEndButton.Bottom + 10);
+            setRandomStartEndButton.Location = new Point(setEndButton.Left, setEndButton.Bottom + 6);
             setRandomStartEndButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // editing walls
             editWallsButton = new Button();
             editWallsButton.Text = "Edit walls";
             editWallsButton.Size = new Size(140, 30);
-            editWallsButton.Location = new Point(setRandomStartEndButton.Left, setRandomStartEndButton.Bottom + 10);
+            editWallsButton.Location = new Point(setRandomStartEndButton.Left, setRandomStartEndButton.Bottom + 6);
             editWallsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // solve button
             solveButton = new Button();
             solveButton.Text = "Solve maze";
             solveButton.Size = new Size(140, 30);
-            solveButton.Location = new Point(editWallsButton.Left, editWallsButton.Bottom + 10);
+            solveButton.Location = new Point(editWallsButton.Left, editWallsButton.Bottom + 15);
             solveButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             solveButton.Enabled = false;
+
+            // pause button
+            pauseButton = new Button();
+            pauseButton.Text = "Pause";
+            pauseButton.Size = new Size(140, 30);
+            pauseButton.Location = new Point(solveButton.Left, solveButton.Bottom + 6);
+            pauseButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            pauseButton.Enabled = false;
+
+            // step button
+            stepButton = new Button();
+            stepButton.Text = "Step";
+            stepButton.Size = new Size(140, 30);
+            stepButton.Location = new Point(pauseButton.Left, pauseButton.Bottom + 6);
+            stepButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            stepButton.Enabled = false;
+
+            // reset animation button
+            resetAnimationButton = new Button();
+            resetAnimationButton.Text = "Reset Animation";
+            resetAnimationButton.Size = new Size(140, 30);
+            resetAnimationButton.Location = new Point(stepButton.Left, stepButton.Bottom + 6);
+            resetAnimationButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            resetAnimationButton.Enabled = false;
 
             // results label
             resultsLabel = new Label();
             resultsLabel.Text = "";
-            resultsLabel.Size = new Size(140, 100);
-            resultsLabel.Location = new Point(solveButton.Left, solveButton.Bottom + 30);
+            resultsLabel.Size = new Size(140, 50);
+            resultsLabel.Location = new Point(resetAnimationButton.Left, resetAnimationButton.Bottom + 12);
             resultsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             resultsLabel.Font = new Font("Arial", 9, FontStyle.Regular);
-
 
             // tick speed input label
             tickSpeedInputLabel = new Label();
             tickSpeedInputLabel.Text = "Select animation speed: 0 - 100";
-            tickSpeedInputLabel.Size = new Size(140, 100);
-            tickSpeedInputLabel.Location = new Point(resultsLabel.Left, resultsLabel.Bottom + 30);
+            tickSpeedInputLabel.Size = new Size(140, 35);
+            tickSpeedInputLabel.Location = new Point(resultsLabel.Left, resultsLabel.Bottom + 6);
             tickSpeedInputLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-
+            tickSpeedInputLabel.Font = new Font("Arial", 9.5f, FontStyle.Bold);
 
             // tick speed setter
             tickSpeedInput = new NumericUpDown();
             tickSpeedInput.Minimum = 1;
             tickSpeedInput.Maximum = 100;
             tickSpeedInput.Value = 5;
-            tickSpeedInput.Location = new Point(tickSpeedInputLabel.Left, tickSpeedInputLabel.Bottom);
+            tickSpeedInput.Size = new Size(140, 30);
+            tickSpeedInput.Location = new Point(tickSpeedInputLabel.Left, tickSpeedInputLabel.Bottom + 3);
             tickSpeedInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
-            // controls
-            Controls.Add(generateButton);
-            Controls.Add(solveButton);
-            Controls.Add(resultsLabel);
-            Controls.Add(setStartButton);
-            Controls.Add(setEndButton);
-            Controls.Add(setRandomStartEndButton);
-            Controls.Add(generationAlgorithmComboBox);
+            // controls collection ordered identically to initialization
             Controls.Add(generationAlgorithmLabel);
-            Controls.Add(algorithm1Label);
-            Controls.Add(algorithm2Label);
-            Controls.Add(algorithm1ComboBox);
-            Controls.Add(algorithm2ComboBox);
+            Controls.Add(generationAlgorithmComboBox);
             Controls.Add(mazeSizeLabel);
             Controls.Add(rowsLabel);
             Controls.Add(rowsInput);
             Controls.Add(columnsLabel);
             Controls.Add(columnsInput);
+            Controls.Add(generateButton);
+            Controls.Add(algorithm1Label);
+            Controls.Add(algorithm1ComboBox);
+            Controls.Add(algorithm2Label);
+            Controls.Add(algorithm2ComboBox);
+            Controls.Add(setStartButton);
+            Controls.Add(setEndButton);
+            Controls.Add(setRandomStartEndButton);
             Controls.Add(editWallsButton);
+            Controls.Add(solveButton);
+            Controls.Add(pauseButton);
+            Controls.Add(stepButton);
+            Controls.Add(resetAnimationButton);
+            Controls.Add(resultsLabel);
             Controls.Add(tickSpeedInputLabel);
             Controls.Add(tickSpeedInput);
         }
@@ -321,17 +344,29 @@ namespace MazeAlgorithmVisualiserNEA
 
             solveButton.Click += SolveButton_Click;
 
+            pauseButton.Click += PauseButton_Click;
+            stepButton.Click += StepButton_Click;
+            resetAnimationButton.Click += ResetAnimationButton_Click;
+
             Paint += MainForm_Paint;
             MouseClick += MainForm_MouseClick;
 
             animator1.AnimationUpdated += PathfindingAnimator_AnimationUpdated;
             animator2.AnimationUpdated += PathfindingAnimator_AnimationUpdated;
         }
+
+
+        // BUTTON CLICKS
         private void GenerateButton_Click(object sender, EventArgs e)
         {
             // reset previous animations
             animator1.Reset();
             animator2.Reset();
+
+            pauseButton.Enabled = false;
+            stepButton.Enabled = false;
+            resetAnimationButton.Enabled = false;
+            pauseButton.Text = "Pause";
 
             // clear results
             if (resultsLabel != null)
@@ -393,8 +428,6 @@ namespace MazeAlgorithmVisualiserNEA
                 editWallsButton.Text = "Edit walls";
             }
         }
-
-
         private void SolveButton_Click(object sender, EventArgs e)
         {
             // reset animators 
@@ -414,9 +447,48 @@ namespace MazeAlgorithmVisualiserNEA
             // start animation
             StartAnimation(solution1, animator1);
             StartAnimation(solution2, animator2);
+            pauseButton.Enabled = true;
+            stepButton.Enabled = true;
+            resetAnimationButton.Enabled = true;
 
             solveButton.Enabled = false;
         }
+
+        private void PauseButton_Click(object sender, EventArgs e)
+        {
+            if (!animator1.IsPaused)
+            {
+                animator1.Pause();
+                animator2.Pause();
+                pauseButton.Text = "Resume";
+            }
+            else
+            {
+                animator1.Resume();
+                animator2.Resume();
+                pauseButton.Text = "Pause";
+            }
+        }
+
+        private void StepButton_Click(object sender, EventArgs e)
+        {
+            animator1.Step();
+            animator2.Step();
+        }
+
+        private void ResetAnimationButton_Click(object sender, EventArgs e)
+        {
+            animator1.Reset();
+            animator2.Reset();
+
+            pauseButton.Text = "Pause";
+            solveButton.Enabled = true;
+
+            resultsLabel.Text = "";
+            Invalidate();
+        }
+
+
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
             // clicks dont do anything if not selecting start end and not editing walls
@@ -528,7 +600,6 @@ namespace MazeAlgorithmVisualiserNEA
         {
             solver1 = GetSolver(algorithm1ComboBox.SelectedItem.ToString());
             solver2 = GetSolver(algorithm2ComboBox.SelectedItem.ToString());
-
 
             solution1 = solver1.Solve(graph);
             solution2 = solver2.Solve(graph);

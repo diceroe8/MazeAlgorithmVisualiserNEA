@@ -13,6 +13,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 
         private int currentIndex;
         private bool explorationFinished;
+        private bool paused;
         private int cellSize = 20; // default
 
         public int CellSize
@@ -31,6 +32,11 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
             get { return explorationFinished; }
         }
 
+        public bool IsPaused
+        {
+            get { return paused; }
+        }
+
         public event EventHandler AnimationUpdated;
         public event EventHandler AnimationCompleted;
 
@@ -46,6 +52,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
             this.process = process;
             currentIndex = 0;
             explorationFinished = false;
+            paused = false;
             timer.Start();
 
             if (AnimationUpdated != null)
@@ -55,17 +62,50 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
 
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        public void Pause()
         {
-            if (process == null)
+            if (process == null || explorationFinished)
             {
-                timer.Stop();
+                return;
+            }
+            timer.Stop();
+            paused = true;
+        }
+
+        public void Resume()
+        {
+            if (process == null || explorationFinished)
+            {
+                return;
+            }
+
+            paused = false;
+            timer.Start();
+        }
+
+        public void Step()
+        {
+            if (process == null || explorationFinished)
+            {
+                return;
+            }
+            timer.Stop();
+            paused = true;
+
+            AdvanceOneStep();
+        }
+
+        private void AdvanceOneStep()
+        {
+            if (process == null || explorationFinished)
+            {
                 return;
             }
 
             if (currentIndex < process.VisitedNodes.Count)
             {
                 currentIndex++;
+
                 if (AnimationUpdated != null)
                 {
                     AnimationUpdated(this, EventArgs.Empty);
@@ -74,8 +114,6 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
             else
             {
                 explorationFinished = true;
-                timer.Stop();
-
                 if (AnimationCompleted != null)
                 {
                     AnimationCompleted(this, EventArgs.Empty);
@@ -85,6 +123,12 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
                     AnimationUpdated(this, EventArgs.Empty);
                 }
             }
+
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            AdvanceOneStep();        
         }
 
         public void Draw(Graphics graphics, Color visitedColour, Color pathColour)
@@ -148,6 +192,7 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
             process = null;
             currentIndex = 0;
             explorationFinished = false;
+            paused = false;
 
             if (AnimationUpdated != null)
             {
