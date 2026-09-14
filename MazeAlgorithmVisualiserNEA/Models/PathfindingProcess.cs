@@ -8,13 +8,16 @@ namespace MazeAlgorithmVisualiserNEA.Models
     public class PathfindingProcess
     {
         public List<GraphNode> Path;
-
         public List<GraphNode> VisitedNodes;
+        public List<PathfindingStep> Steps;
 
-        public PathfindingProcess(List<GraphNode> path, List<GraphNode> visitedNodes)
+        
+
+        public PathfindingProcess(List<GraphNode> path, List<GraphNode> visitedNodes, List<PathfindingStep> steps)
         {
             Path = path;
             VisitedNodes = visitedNodes;
+            Steps = steps;
         } 
     }
 }

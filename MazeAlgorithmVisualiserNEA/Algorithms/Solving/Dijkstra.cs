@@ -26,6 +26,9 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             // priority queue to select node with smallest known distance
             PriorityQueue<GraphNode> queue = new PriorityQueue<GraphNode>();
 
+            // pathfinding steps
+            List<PathfindingStep> steps = new List<PathfindingStep>();
+
             // sets initial distance of each node to infinity (basically)
             foreach (GraphNode node in graph.Nodes)
             {
@@ -51,6 +54,15 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
                 // marks node as visited
                 visited.Add(current);
                 visitedOrder.Add(current);
+
+                // record info about this step
+                steps.Add(new PathfindingStep
+                {
+                    CurrentNode = current,
+                    NodesExplored = visitedOrder.Count,
+                    PriorityQueueSize = queue.Count(),
+                    Distance = distances[current]
+                });
 
                 // shortest path found
                 if (current == graph.End)
@@ -86,7 +98,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             // if end never reached, there is no path
             if (!visited.Contains(graph.End))
             {
-                return new PathfindingProcess(new List<GraphNode>(), visitedOrder);
+                return new PathfindingProcess(new List<GraphNode>(), visitedOrder, steps);
             }
 
             // reconstruct shortest path
@@ -106,7 +118,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             // reverse path
             path.Reverse();
 
-            return new PathfindingProcess(path, visitedOrder);
+            return new PathfindingProcess(path, visitedOrder, steps);
 
         }
 

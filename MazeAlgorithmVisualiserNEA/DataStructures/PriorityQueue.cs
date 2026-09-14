@@ -45,6 +45,11 @@ namespace MazeAlgorithmVisualiserNEA.DataStructures
             return items.Count == 0;
         }
 
+        public int Count()
+        {
+            return items.Count;
+        }
+
 
     }
 }

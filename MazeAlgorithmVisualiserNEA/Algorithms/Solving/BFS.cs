@@ -15,16 +15,24 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             HashSet<GraphNode> visited = new HashSet<GraphNode>();
             Dictionary<GraphNode, GraphNode> parents = new Dictionary<GraphNode, GraphNode>();
             List<GraphNode> visitedOrder = new List<GraphNode>();
+            List<PathfindingStep> steps = new List<PathfindingStep>();
+
 
 
             queue.Enqueue(graph.Start);
             visited.Add(graph.Start);
 
+            // continues until no nodes to visit
             while(!queue.IsEmpty())
             {
+                // get next node
                 GraphNode current = queue.Dequeue();
                 visitedOrder.Add(current);
 
+                // record information
+                steps.Add(new PathfindingStep{CurrentNode = current, NodesExplored = visitedOrder.Count, QueueSize = queue.Count()});
+
+                // stop at end
                 if (current == graph.End)
                 {
                     break;
@@ -46,7 +54,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
 
             if (!visited.Contains(graph.End))
             {
-                return new PathfindingProcess(new List<GraphNode>(), visitedOrder);
+                return new PathfindingProcess(new List<GraphNode>(), visitedOrder, steps);
             }
 
             List<GraphNode> path = new List<GraphNode>();
@@ -62,7 +70,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             path.Add(graph.Start);
             path.Reverse();
 
-            return new PathfindingProcess(path, visitedOrder);
+            return new PathfindingProcess(path, visitedOrder, steps);
 
 
         }

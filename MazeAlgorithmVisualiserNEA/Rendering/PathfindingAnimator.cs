@@ -37,6 +37,24 @@ namespace MazeAlgorithmVisualiserNEA.Rendering
             get { return paused; }
         }
 
+        public PathfindingStep CurrentStep
+        {
+            get
+            {
+                if (process == null || currentIndex == 0)
+                {
+                    return null;
+                }
+
+                if (currentIndex > process.Steps.Count)
+                {
+                    return null;
+                }
+
+                return process.Steps[currentIndex - 1];
+            }
+        }
+
         public event EventHandler AnimationUpdated;
         public event EventHandler AnimationCompleted;
 

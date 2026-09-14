@@ -27,6 +27,9 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             // priority queue
             PriorityQueue<GraphNode> queue = new PriorityQueue<GraphNode>();
 
+            // steps taken during pathfinding
+            List<PathfindingStep> steps = new List<PathfindingStep>();
+
             // set each nodes gScore to infinity
             foreach (GraphNode node in graph.Nodes)
             {
@@ -61,6 +64,22 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
                 // mark as visited
                 visited.Add(current);
                 visitedOrder.Add(current);
+
+                // calculate current node's scores
+                int currentGScore = gScore[current];
+                int currentHScore = Heuristic(current, graph.End);
+                int currentFScore = currentGScore + currentHScore;
+
+                // record information about step
+                steps.Add(new PathfindingStep
+                {
+                    CurrentNode = current,
+                    NodesExplored = visitedOrder.Count,
+                    PriorityQueueSize = queue.Count(),
+                    GScore = currentGScore,
+                    HScore = currentHScore,
+                    FScore = currentFScore
+                });
 
                 // end has been reached
                 if (current == graph.End)
@@ -102,7 +121,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
 
             if (!visited.Contains(graph.End))
             {
-                return new PathfindingProcess(new List<GraphNode>(), visitedOrder);
+                return new PathfindingProcess(new List<GraphNode>(), visitedOrder, steps);
             }
 
             // reconstruct path
@@ -120,7 +139,7 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             path.Add(graph.Start);
             path.Reverse();
 
-            return new PathfindingProcess(path, visitedOrder);
+            return new PathfindingProcess(path, visitedOrder, steps);
         }
 
         // Manhattan distance heuristic
