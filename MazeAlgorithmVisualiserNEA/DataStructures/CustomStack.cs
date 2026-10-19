@@ -15,18 +15,14 @@ namespace MazeAlgorithmVisualiserNEA.DataStructures
         }
 
         // checker methods
-
         public bool IsEmpty()
         {
             return items.Count == 0; // checks if stack is empty
         }
-
         public int Count()
         {
             return items.Count;
         }
-
-
 
         // PUSH POP PEEK METHODS
         public void Push(T item)
@@ -55,7 +51,4 @@ namespace MazeAlgorithmVisualiserNEA.DataStructures
             }
             return items[items.Count - 1];
         }
-    }
-
-        
-}
+    }}

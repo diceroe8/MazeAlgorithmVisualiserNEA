@@ -17,8 +17,6 @@ namespace MazeAlgorithmVisualiserNEA.Algorithms.Solving
             List<GraphNode> visitedOrder = new List<GraphNode>();
             List<PathfindingStep> steps = new List<PathfindingStep>();
 
-
-
             queue.Enqueue(graph.Start);
             visited.Add(graph.Start);
 

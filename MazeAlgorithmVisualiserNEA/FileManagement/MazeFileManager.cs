@@ -17,8 +17,6 @@ namespace MazeAlgorithmVisualiserNEA.FileManagement
     // KEEP FORMAT AS
     // MAZE, ROWS, COLUMNS, START, END, EACH CELL (WITH EXISTENCE OF WALLS)
 
-
-
     public class MazeFileManager
     {
         public static void SaveMaze(Maze maze, string filePath)
@@ -170,8 +168,6 @@ namespace MazeAlgorithmVisualiserNEA.FileManagement
                 lineIndex++;
             }
             return maze;
-
-
 
         }
 

@@ -45,7 +45,6 @@ namespace MazeAlgorithmVisualiserNEA.Models
 
 
         // allows other classes to access a specific cell
-
         public Cell GetCell(int row, int column)
         {
             if (!IsWithinBounds(row, column)) // makes sure a cell is within the maze before returning
@@ -56,11 +55,13 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return cells[row, column];
         }
 
+
         // to check whether a position is within the maze boundaries
         public bool IsWithinBounds(int row, int column)
         {
             return row >= 0 && row < Rows && column >= 0 && column < Columns;
         }
+
 
         // gets neighbour of a cell depending on direction
         public Cell? GetNeighbour(Cell cell, Direction direction)
@@ -90,6 +91,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return null;
 
         }
+
 
         // removes both walls between cells to make removing walls easier
         public void RemoveWallBetween(Cell first, Cell second)
@@ -122,6 +124,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
             }
         }
 
+
         public void AddWallBetween(Cell first, Cell second) // mainly for recursive division
         {
             if (first.Row == second.Row)
@@ -152,6 +155,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
             }
         }
 
+
         // gets a list of cell neighbours
         // useful for pathfinding algorithms
         public List<Cell> GetNeighbours(Cell cell)
@@ -171,6 +175,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return neighbours;
         }
 
+
         // gets a list of unvisited neighbours
         public List<Cell> GetUnvisitedNeighbours(Cell cell)
         {
@@ -189,6 +194,7 @@ namespace MazeAlgorithmVisualiserNEA.Models
             return neighbours;
         }
         
+        // gets a list of visited neighbours
         public List<Cell> GetVisitedNeighbours(Cell cell)
         {
             List<Cell> neighbours = new List<Cell>();
@@ -288,7 +294,6 @@ namespace MazeAlgorithmVisualiserNEA.Models
 
             return false;
         }
-
 
         // setting start and end methods
         public Cell GetRandomCell(Random random)

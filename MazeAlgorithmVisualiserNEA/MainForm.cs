@@ -75,6 +75,7 @@ namespace MazeAlgorithmVisualiserNEA
         private int cellSize;
         private int mazeRows = 32;
         private int mazeColumns = 32;
+        private bool mazeGenerated = false;
         bool settingStart = false;
         bool settingEnd = false;
         bool editingWalls = false;
@@ -96,7 +97,7 @@ namespace MazeAlgorithmVisualiserNEA
             random = new Random();
 
             // maze
-            maze = new Maze(10, 10);
+            maze = null;
 
             // pathfinding 
             solver1 = null;
@@ -375,6 +376,8 @@ namespace MazeAlgorithmVisualiserNEA
             Controls.Add(resultsLabel);
             Controls.Add(tickSpeedInputLabel);
             Controls.Add(tickSpeedInput);
+
+            
         }
         private void InitialiseEvents()
         {
@@ -518,6 +521,7 @@ namespace MazeAlgorithmVisualiserNEA
                     try
                     {
                         maze = MazeFileManager.LoadMaze(dialog.FileName);
+                        mazeGenerated = true;
 
                         mazeRows = maze.Rows;
                         mazeColumns = maze.Columns;
@@ -676,6 +680,12 @@ namespace MazeAlgorithmVisualiserNEA
         }
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
+            if (!mazeGenerated)
+            {
+                DrawWelcomeScreen(e.Graphics);
+                return;
+            }
+
             int mazeWidth = maze.Columns * cellSize; // calculate total maze width
 
             int paddingRight = 20;
@@ -705,11 +715,40 @@ namespace MazeAlgorithmVisualiserNEA
         }
 
         // helper methods
+
+        private void DrawWelcomeScreen(Graphics g)
+        {
+            string title =
+                "Maze Algorithm Visualiser";
+
+            string instructions =
+                "Welcome!\n\n" +
+                "1. Select a maze generation algorithm\n" +
+                "2. Choose maze dimensions\n" +
+                "3. Click Generate Maze\n" +
+                "4. Set Start and End points\n" +
+                "5. Select algorithms to compare\n" +
+                "6. Click Solve Maze\n\n" +
+                "Press 'Generate Maze' to begin.";
+
+            using Font titleFont = new Font("Segoe UI", 22, FontStyle.Bold);
+
+            using Font bodyFont = new Font("Segoe UI", 12);
+
+            SizeF titleSize = g.MeasureString(title, titleFont);
+
+            float centreX = (ClientSize.Width - titleSize.Width) / 2;
+
+            g.DrawString(title, titleFont, Brushes.DarkBlue, centreX, 80);
+
+            g.DrawString( instructions, bodyFont, Brushes.Black, 100, 170);
+        }
         private void GenerateMaze(int rows, int columns)
         {
             mazeGenerator = GetMazeGenerator(generationAlgorithmComboBox.SelectedItem.ToString());
             maze = new Maze(rows, columns);
             mazeGenerator.Generate(maze);
+            mazeGenerated = true;
         }
         private void ConvertMazeToGraph()
         {
