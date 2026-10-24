@@ -6,7 +6,10 @@ using MazeAlgorithmVisualiserNEA.DataStructures;
 using MazeAlgorithmVisualiserNEA.FileManagement;
 using MazeAlgorithmVisualiserNEA.Models;
 using MazeAlgorithmVisualiserNEA.Rendering;
+using System.Diagnostics;
+using MazeAlgorithmVisualiserNEA.Statistics;
 using Microsoft.VisualBasic.Devices;
+using System.Drawing.Text;
 
 namespace MazeAlgorithmVisualiserNEA
 {
@@ -20,6 +23,7 @@ namespace MazeAlgorithmVisualiserNEA
         private Button generateButton;
         private Button exportMazeButton;
         private Button importMazeButton;
+        private Button statisticsButton;
         private Button solveButton;
         private Button setStartButton;
         private Button setEndButton;
@@ -29,7 +33,6 @@ namespace MazeAlgorithmVisualiserNEA
         private Button stepButton;
         private Button resetAnimationButton;
         private Label mazeSizeLabel;
-        private Label resultsLabel;
         private Label generationAlgorithmLabel;
         private Label algorithm1Label;
         private Label algorithm2Label;
@@ -38,7 +41,6 @@ namespace MazeAlgorithmVisualiserNEA
         private Label tickSpeedInputLabel;
         private Label algorithm1InfoLabel;
         private Label algorithm2InfoLabel;
-
         private ComboBox generationAlgorithmComboBox;
         private ComboBox algorithm1ComboBox;
         private ComboBox algorithm2ComboBox;
@@ -70,6 +72,12 @@ namespace MazeAlgorithmVisualiserNEA
         // converters
         private MazeToGraphConverter converter;
 
+
+        // statistics
+        private MazeAnalyser analyser;
+        private MazeStatistics mazeStatistics;
+        private PathfindingStatistics pathfindingStatistics1;
+        private PathfindingStatistics pathfindingStatistics2;
         // other
         private Random random;
         private int cellSize;
@@ -103,6 +111,9 @@ namespace MazeAlgorithmVisualiserNEA
             solver1 = null;
             solver2 = null; // CHANGE THESE TO CHANGE THE PATHFINDING ALGORITHM
 
+            // statistics
+            analyser = new MazeAnalyser();
+
             // converter
             converter = new MazeToGraphConverter();
 
@@ -122,6 +133,15 @@ namespace MazeAlgorithmVisualiserNEA
 
         private void InitialiseUI()
         {
+            // colours and fonts
+            Font TitleFont = new Font("Segoe UI", 9f, FontStyle.Bold);
+            Font BodyFont = new Font("Segoe UI", 8.5f, FontStyle.Bold);
+
+            Color LabelForeColor = Color.DarkSlateGray; // text color for labels
+            Color DropdownBackColor = Color.White;      // background color for dropdowns
+            Color DropdownForeColor = Color.DarkBlue; 
+
+
             // generation algorithm label
             generationAlgorithmLabel = new Label();
             generationAlgorithmLabel.Text = "Generation Algorithm:";
@@ -322,20 +342,19 @@ namespace MazeAlgorithmVisualiserNEA
             algorithm2InfoLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             algorithm2InfoLabel.Font = new Font("Arial", 8, FontStyle.Regular);
 
-            // results label
-            resultsLabel = new Label();
-            resultsLabel.Text = "";
-            resultsLabel.Size = new Size(180, 45);
-            resultsLabel.AutoSize = true;
-            resultsLabel.Location = new Point(algorithm2InfoLabel.Left, algorithm2InfoLabel.Bottom + 4);
-            resultsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            resultsLabel.Font = new Font("Arial", 9, FontStyle.Regular);
+            // statistics button
+            statisticsButton = new Button();
+            statisticsButton.Text = "Statistics";
+            statisticsButton.Size = new Size(180, 30);
+            statisticsButton.Location = new Point(algorithm2InfoLabel.Left, algorithm2InfoLabel.Bottom + 6);
+            statisticsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            statisticsButton.Enabled = false;
 
             // tick speed input label
             tickSpeedInputLabel = new Label();
             tickSpeedInputLabel.Text = "Animation speed: 1 - 100";
             tickSpeedInputLabel.Size = new Size(180, 30);
-            tickSpeedInputLabel.Location = new Point(resultsLabel.Left, resultsLabel.Bottom + 40);
+            tickSpeedInputLabel.Location = new Point(statisticsButton.Left, statisticsButton.Bottom + 20);
             tickSpeedInputLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             tickSpeedInputLabel.Font = new Font("Arial", 8.5f, FontStyle.Bold);
 
@@ -343,7 +362,7 @@ namespace MazeAlgorithmVisualiserNEA
             tickSpeedInput = new NumericUpDown();
             tickSpeedInput.Minimum = 1;
             tickSpeedInput.Maximum = 100;
-            tickSpeedInput.Value = 5;
+            tickSpeedInput.Value = 50;
             tickSpeedInput.Size = new Size(180, 24);
             tickSpeedInput.Location = new Point(tickSpeedInputLabel.Left, tickSpeedInputLabel.Bottom);
             tickSpeedInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -373,11 +392,9 @@ namespace MazeAlgorithmVisualiserNEA
             Controls.Add(resetAnimationButton);
             Controls.Add(algorithm1InfoLabel);
             Controls.Add(algorithm2InfoLabel);
-            Controls.Add(resultsLabel);
+            Controls.Add(statisticsButton);
             Controls.Add(tickSpeedInputLabel);
             Controls.Add(tickSpeedInput);
-
-            
         }
         private void InitialiseEvents()
         {
@@ -396,6 +413,8 @@ namespace MazeAlgorithmVisualiserNEA
 
             exportMazeButton.Click += ExportMazeButton_Click;
             importMazeButton.Click += ImportMazeButton_Click;
+
+            statisticsButton.Click += StatisticsButton_Click;
 
             Paint += MainForm_Paint;
             MouseClick += MainForm_MouseClick;
@@ -416,12 +435,6 @@ namespace MazeAlgorithmVisualiserNEA
             stepButton.Enabled = false;
             resetAnimationButton.Enabled = false;
             pauseButton.Text = "Pause";
-
-            // clear results
-            if (resultsLabel != null)
-            {
-                resultsLabel.Text = "";
-            }
 
             // clear info label text
             algorithm1InfoLabel.Text = "";
@@ -465,7 +478,6 @@ namespace MazeAlgorithmVisualiserNEA
             solveButton.Enabled = true;
             Invalidate();
         }
-
         private void EditWallsButton_Click(object sender, EventArgs e)
         {
             editingWalls = !editingWalls;
@@ -481,7 +493,6 @@ namespace MazeAlgorithmVisualiserNEA
                 editWallsButton.Text = "Edit walls";
             }
         }
-
         private void ExportMazeButton_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog dialog = new SaveFileDialog())
@@ -508,7 +519,6 @@ namespace MazeAlgorithmVisualiserNEA
                 }
             }
         }
-
         private void ImportMazeButton_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog dialog = new OpenFileDialog())
@@ -521,6 +531,7 @@ namespace MazeAlgorithmVisualiserNEA
                     try
                     {
                         maze = MazeFileManager.LoadMaze(dialog.FileName);
+                        mazeStatistics = analyser.Analyse(maze);
                         mazeGenerated = true;
 
                         mazeRows = maze.Rows;
@@ -534,9 +545,7 @@ namespace MazeAlgorithmVisualiserNEA
                         animator1.Reset();
                         animator2.Reset();
 
-                        solveButton.Enabled = maze.HasStartAndEnd();
-
-                        resultsLabel.Text = "";
+                        solveButton.Enabled = maze.HasStartAndEnd(); // check if maze has start and end before allowing to solve
 
                         Invalidate();
                     }
@@ -575,8 +584,8 @@ namespace MazeAlgorithmVisualiserNEA
             resetAnimationButton.Enabled = true;
 
             solveButton.Enabled = false;
+            statisticsButton.Enabled = true;
         }
-
         private void PauseButton_Click(object sender, EventArgs e)
         {
             if (!animator1.IsPaused)
@@ -592,13 +601,11 @@ namespace MazeAlgorithmVisualiserNEA
                 pauseButton.Text = "Pause";
             }
         }
-
         private void StepButton_Click(object sender, EventArgs e)
         {
             animator1.Step();
             animator2.Step();
         }
-
         private void ResetAnimationButton_Click(object sender, EventArgs e)
         {
             animator1.Reset();
@@ -607,11 +614,13 @@ namespace MazeAlgorithmVisualiserNEA
             pauseButton.Text = "Pause";
             solveButton.Enabled = true;
 
-            resultsLabel.Text = "";
             Invalidate();
         }
-
-
+        private void StatisticsButton_Click(object sender, EventArgs e)
+        {
+            StatisticsForm form = new StatisticsForm(mazeStatistics, pathfindingStatistics1, pathfindingStatistics2);
+            form.ShowDialog();
+        }
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
             // clicks dont do anything if not selecting start end and not editing walls
@@ -714,6 +723,7 @@ namespace MazeAlgorithmVisualiserNEA
 
         }
 
+
         // helper methods
 
         private void DrawWelcomeScreen(Graphics g)
@@ -748,6 +758,7 @@ namespace MazeAlgorithmVisualiserNEA
             mazeGenerator = GetMazeGenerator(generationAlgorithmComboBox.SelectedItem.ToString());
             maze = new Maze(rows, columns);
             mazeGenerator.Generate(maze);
+            mazeStatistics = analyser.Analyse(maze);
             mazeGenerated = true;
         }
         private void ConvertMazeToGraph()
@@ -759,8 +770,41 @@ namespace MazeAlgorithmVisualiserNEA
             solver1 = GetSolver(algorithm1ComboBox.SelectedItem.ToString());
             solver2 = GetSolver(algorithm2ComboBox.SelectedItem.ToString());
 
+            // timing for statistics
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
             solution1 = solver1.Solve(graph);
+
+            stopwatch.Stop();
+
+            double algorithm1Time = stopwatch.Elapsed.TotalMilliseconds;
+
+            stopwatch.Reset();
+
+            stopwatch.Start();
+
             solution2 = solver2.Solve(graph);
+
+            stopwatch.Stop();
+
+            double algorithm2Time = stopwatch.Elapsed.TotalMilliseconds;
+
+            pathfindingStatistics1 = new PathfindingStatistics(
+                algorithm1ComboBox.SelectedItem.ToString(),
+                solution1.Path.Count,
+                solution1.VisitedNodes.Count,
+                algorithm1Time,
+                solution1.Path.Count > 0);
+
+            pathfindingStatistics2 = new PathfindingStatistics(
+                algorithm2ComboBox.SelectedItem.ToString(),
+                solution2.Path.Count,
+                solution2.VisitedNodes.Count,
+                algorithm2Time,
+                solution2.Path.Count > 0);
+
         }
         private void StartAnimation(PathfindingProcess process, PathfindingAnimator animator)
         {
@@ -805,7 +849,6 @@ namespace MazeAlgorithmVisualiserNEA
                     return new ImperfectMazeGenerator();
             }
         }
-
         private void ToggleWall(int mouseX, int mouseY)
         {
             int offsetX = 20;
@@ -879,7 +922,6 @@ namespace MazeAlgorithmVisualiserNEA
 
 
         }
-
         private void PathfindingAnimator_AnimationUpdated(object sender, EventArgs e)
         {
 
@@ -894,15 +936,9 @@ namespace MazeAlgorithmVisualiserNEA
                     int algorithm1Length = solution1 != null && solution1.Path != null ? solution1.Path.Count : 0;
                     int algorithm2Length = solution2 != null && solution2.Path != null ? solution2.Path.Count : 0;
 
-                    // stats display
-                    resultsLabel.Text =
-                            "END FOUND!\n\n" +
-                            $"{algorithm1ComboBox.SelectedItem}: {algorithm1Length}\n" +
-                            $"{algorithm2ComboBox.SelectedItem}: {algorithm2Length}";
                 }
             }
         }
-
         private void UpdateAlgorithmInfo()
         {
             PathfindingStep step1 = animator1.CurrentStep;
@@ -932,7 +968,6 @@ namespace MazeAlgorithmVisualiserNEA
                 algorithm2InfoLabel.Text = "";
             }
         }
-
         private string FormatAlgorithmInfo(string algorithm, PathfindingStep step)
         {
             string currentNode =
@@ -975,7 +1010,6 @@ namespace MazeAlgorithmVisualiserNEA
                     return currentNode + "\n" + nodesExplored;
             }
         }
-
         private void FitMazeToScreen()
         {
             int rightSideBuffer = 200;
@@ -994,6 +1028,7 @@ namespace MazeAlgorithmVisualiserNEA
                 cellSize = 5;
             }
         }
+
     }
 }
 

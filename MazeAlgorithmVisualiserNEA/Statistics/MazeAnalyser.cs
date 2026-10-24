@@ -115,8 +115,7 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
                         passages++;
                     }
 
-                    // Only check bottom connections
-                    // to avoid counting the same passage twice
+                    // only check bottom connections to avoid counting the same passage twice
                     Cell? bottom = maze.GetNeighbour(cell, Direction.Bottom);
 
                     if (bottom != null && !cell.BottomWall)
@@ -140,19 +139,19 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
                 {
                     Cell cell = maze.GetCell(row, column);
 
-                    // Outer top wall
+                    // outer top wall
                     if (row == 0 && cell.TopWall)
                     {
                         walls++;
                     }
 
-                    // Outer left wall
+                    // outer left wall
                     if (column == 0 && cell.LeftWall)
                     {
                         walls++;
                     }
 
-                    // Internal/right wall
+                    // internal/right wall
                     Cell? right = maze.GetNeighbour(cell, Direction.Right);
 
                     if (right != null && cell.RightWall)
@@ -160,7 +159,7 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
                         walls++;
                     }
 
-                    // Internal/bottom wall
+                    // internal/bottom wall
                     Cell? bottom = maze.GetNeighbour(cell, Direction.Bottom);
 
                     if (bottom != null && cell.BottomWall)
@@ -168,13 +167,13 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
                         walls++;
                     }
 
-                    // Outer bottom wall
+                    // outer bottom wall
                     if (row == maze.Rows - 1 && cell.BottomWall)
                     {
                         walls++;
                     }
 
-                    // Outer right wall
+                    // outer right wall
                     if (column == maze.Columns - 1 && cell.RightWall)
                     {
                         walls++;
@@ -228,8 +227,6 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
                 {
                     Cell start = maze.GetCell(row, column);
 
-                    // A corridor consists of cells with exactly
-                    // two possible directions.
                     if (GetConnections(start) != 2)
                     {
                         continue;
@@ -265,8 +262,7 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
         }
 
 
-        // Follows a corridor until it reaches a junction,
-        // dead end, or an already visited corridor cell.
+        // follows a corridor 
         private int TraceCorridor(
             Maze maze,
             Cell start,
@@ -306,8 +302,7 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
         }
 
 
-        // Gets only the cells which can actually be reached
-        // through an open passage.
+        // gets only the cells which can actually be reached
         private List<Cell> GetOpenNeighbours(Maze maze, Cell cell)
         {
             List<Cell> neighbours = new List<Cell>();
@@ -356,8 +351,7 @@ namespace MazeAlgorithmVisualiserNEA.Statistics
         }
 
 
-        // Calculates the proportion of walls compared
-        // with walls + passages.
+        // calculates the proportion of walls compared with walls + passages.
         private double CalculateDensity(int walls, int passages)
         {
             int total = walls + passages;
